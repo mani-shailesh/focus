@@ -84,6 +84,11 @@ DATABASES = {
 }
 
 
+# The model to use to represent a User
+# https://docs.djangoproject.com/en/1.10/ref/settings/#std:setting-AUTH_USER_MODEL
+AUTH_USER_MODEL = 'api.User'
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
