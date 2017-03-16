@@ -84,7 +84,7 @@ target/
 .ipynb_checkpoints
 
 # Secret files
-backend/backend/settings_secret.py
+backend/backend/credentials.py
 
 # Database
 *.sqlite3

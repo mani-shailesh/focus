@@ -8,12 +8,6 @@ class User(AbstractUser):
     pass
 
 
-class Club(models.Model):
-    name = models.CharField(max_length=100, blank=False)
-    description = models.TextField()
-    requests = models.ManyToManyField(User, through=ClubMembershipRequest)
-
-
 class ClubMembershipRequest(models.Model):
     STATUS_CHOICES = (
         ('PD', 'Pending'),
@@ -26,6 +20,13 @@ class ClubMembershipRequest(models.Model):
     initiated = models.DateTimeField(auto_now_add=True, blank=False)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, blank=False, default='PD')
     closed = models.DateTimeField(default=None)
+
+
+class Club(models.Model):
+    name = models.CharField(max_length=100, blank=False)
+    description = models.TextField()
+    requests = models.ManyToManyField(User, through=ClubMembershipRequest)
+
 
 
 class ClubRole(models.Model):
