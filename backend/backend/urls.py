@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^clubs/$', views.ClubList.as_view()),
     url(r'^clubs/(?P<pk>[0-9]+)/$', views.ClubDetail.as_view()),
+    url(r'^projects/$', views.ProjectList.as_view()),
+    url(r'^projects/(?P<pk>[0-9]+)/$', views.ProjectDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

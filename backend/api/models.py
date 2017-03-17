@@ -25,7 +25,7 @@ class ClubMembershipRequest(models.Model):
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     initiated = models.DateTimeField(auto_now_add=True, blank=False)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, blank=False, default='PD')
-    closed = models.DateTimeField(default=None)
+    closed = models.DateTimeField(default=None, blank=True, null=True)
 
 
 class ClubRole(models.Model):
@@ -45,9 +45,15 @@ class Project(models.Model):
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
     started = models.DateTimeField(auto_now_add=True, blank=False)
-    closed = models.DateTimeField(default=None)
+    closed = models.DateTimeField(default=None, blank=True, null=True)
     leader = models.ForeignKey('User', on_delete=models.PROTECT, blank=False, related_name='lead_projects')
     members = models.ManyToManyField('User', through='ProjectMembership')
+    clubs = models.ManyToManyField('Club', through='ClubProject')
+
+
+class ClubProject(models.Model):
+    club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, blank=False)
 
 
 class ProjectMembership(models.Model):

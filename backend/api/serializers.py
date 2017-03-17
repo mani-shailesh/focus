@@ -17,7 +17,7 @@ class ClubRoleSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Project
-        fields = ('id', 'name', 'description', 'started', 'closed', 'leader', 'members')
+        fields = ('id', 'name', 'description', 'started', 'closed', 'leader', 'members', 'clubs')
 
 
 class ChannelSerializer(serializers.ModelSerializer):
