@@ -27,6 +27,8 @@ class ClubRoleSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    started = serializers.ReadOnlyField()
+
     class Meta:
         model = models.Project
         fields = ('id', 'name', 'description', 'started', 'closed', 'leader', 'members', 'clubs')
@@ -39,6 +41,8 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    created = serializers.ReadOnlyField()
+
     class Meta:
         model = models.Post
         fields = ('id', 'content', 'created', 'channel')
@@ -46,6 +50,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class ConversationSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
+    created = serializers.ReadOnlyField()
 
     class Meta:
         model = models.Conversation
@@ -53,12 +58,16 @@ class ConversationSerializer(serializers.ModelSerializer):
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
+    created = serializers.ReadOnlyField()
+
     class Meta:
         model = models.Feedback
         fields = ('id', 'content', 'created', 'club', 'author')
 
 
 class FeedbackReplySerializer(serializers.ModelSerializer):
+    created = serializers.ReadOnlyField()
+
     class Meta:
         model = models.FeedbackReply
         fields = ('id', 'content', 'created', 'parent')
