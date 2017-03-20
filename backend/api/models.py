@@ -32,10 +32,15 @@ class ClubMembershipRequest(models.Model):
 
 
 class ClubRole(models.Model):
+    PRIVILEGE_CHOICES = (
+        ('REP', 'Representative'),
+        ('MEM', 'Member')
+    )
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False, related_name='roles')
     members = models.ManyToManyField('User', through='ClubMembership')
+    privilege = models.CharField(max_length=3, choices=PRIVILEGE_CHOICES, blank=False, default='MEM')
 
     def __str__(self):
         return str(self.club) + " " + str(self.name)

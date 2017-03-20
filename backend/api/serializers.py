@@ -23,7 +23,7 @@ class ClubSerializer(serializers.ModelSerializer):
 class ClubRoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ClubRole
-        fields = ('id', 'name', 'description', 'club')
+        fields = ('id', 'name', 'description', 'club', 'privilege')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
