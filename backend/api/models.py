@@ -13,6 +13,9 @@ class Club(models.Model):
     description = models.TextField()
     requests = models.ManyToManyField('User', through='ClubMembershipRequest')
 
+    def __str__(self):
+        return self.name
+
 
 class ClubMembershipRequest(models.Model):
     STATUS_CHOICES = (
@@ -34,6 +37,9 @@ class ClubRole(models.Model):
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     members = models.ManyToManyField('User', through='ClubMembership')
 
+    def __str__(self):
+        return str(self.club) + " " + str(self.name)
+
 
 class ClubMembership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
@@ -49,6 +55,9 @@ class Project(models.Model):
     leader = models.ForeignKey('User', on_delete=models.PROTECT, blank=False, related_name='lead_projects')
     members = models.ManyToManyField('User', through='ProjectMembership')
     clubs = models.ManyToManyField('Club', through='ClubProject')
+
+    def __str__(self):
+        return str(self.name)
 
 
 class ClubProject(models.Model):
@@ -68,6 +77,9 @@ class Channel(models.Model):
     club = models.OneToOneField('Club', on_delete=models.CASCADE, blank=False)
     subscribers = models.ManyToManyField('User', through='ChannelSubscription')
 
+    def __str__(self):
+        return str(self.club) + " " + str(self.name)
+
 
 class ChannelSubscription(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
@@ -80,6 +92,9 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True, blank=False)
     channel = models.ForeignKey('Channel', on_delete=models.CASCADE, blank=False)
 
+    def __str__(self):
+        return str(self.channel) + " " + str(self.created)
+
 
 class Conversation(models.Model):
     content = models.TextField(blank=False)
@@ -88,6 +103,9 @@ class Conversation(models.Model):
     author = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
     parent = models.ForeignKey('Conversation', on_delete=models.CASCADE, default=None)
 
+    def __str__(self):
+        return str(self.channel) + " " + str(self.created)
+
 
 class Feedback(models.Model):
     content = models.TextField(blank=False)
@@ -95,8 +113,14 @@ class Feedback(models.Model):
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     author = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
 
+    def __str__(self):
+        return str(self.club) + " " + str(self.created)
+
 
 class FeedbackReply(models.Model):
     content = models.TextField(blank=False)
     created = models.DateTimeField(auto_now_add=True, blank=False)
     parent = models.OneToOneField('Feedback', on_delete=models.CASCADE, blank=False)
+
+    def __str__(self):
+        return str(self.parent) + " " + str(self.created)
