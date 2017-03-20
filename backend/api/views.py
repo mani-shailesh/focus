@@ -1,6 +1,8 @@
-from . import models, serializers, permissions
+from . import models, serializers, permissions, filters
 from rest_framework import generics
 from rest_framework import permissions as rest_permissions
+from rest_framework import filters as rest_filters
+import django_filters
 
 
 class UserList(generics.ListAPIView):
@@ -18,6 +20,9 @@ class UserDetail(generics.RetrieveUpdateAPIView):
 class ClubList(generics.ListCreateAPIView):
     queryset = models.Club.objects.all()
     serializer_class = serializers.ClubSerializer
+    filter_backends = (rest_filters.SearchFilter,
+                       filters.MyClubsFilterBackend)
+    search_fields = ('name',)
 
 
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
