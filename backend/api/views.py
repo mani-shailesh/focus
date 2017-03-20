@@ -1,13 +1,14 @@
-from . import models, serializers
+from . import models, serializers, permissions
 from rest_framework import generics
+from rest_framework import permissions as rest_permissions
 
 
-class UserList(generics.ListCreateAPIView):
+class UserList(generics.ListAPIView):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
 
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+class UserDetail(generics.RetrieveUpdateAPIView):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
 
@@ -54,11 +55,17 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ConversationList(generics.ListCreateAPIView):
     queryset = models.Conversation.objects.all()
+    permission_classes = (rest_permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = serializers.ConversationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class ConversationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Conversation.objects.all()
+    permission_classes = (rest_permissions.IsAuthenticatedOrReadOnly,
+                          permissions.IsAuthorOrReadOnly)
     serializer_class = serializers.ConversationSerializer
 
 

@@ -39,6 +39,8 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+
     class Meta:
         model = models.Conversation
         fields = ('id', 'content', 'created', 'channel', 'author', 'parent')

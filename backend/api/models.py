@@ -101,7 +101,7 @@ class Conversation(models.Model):
     created = models.DateTimeField(auto_now_add=True, blank=False)
     channel = models.ForeignKey('Channel', on_delete=models.CASCADE, blank=False)
     author = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
-    parent = models.ForeignKey('Conversation', on_delete=models.CASCADE, default=None)
+    parent = models.ForeignKey('Conversation', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
     def __str__(self):
         return str(self.channel) + " " + str(self.created)
