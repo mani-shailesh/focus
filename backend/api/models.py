@@ -34,7 +34,7 @@ class ClubMembershipRequest(models.Model):
 class ClubRole(models.Model):
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
-    club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
+    club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False, related_name='roles')
     members = models.ManyToManyField('User', through='ClubMembership')
 
     def __str__(self):

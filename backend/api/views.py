@@ -10,6 +10,8 @@ class UserList(generics.ListAPIView):
 
 class UserDetail(generics.RetrieveUpdateAPIView):
     queryset = models.User.objects.all()
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsSelfOrReadOnly)
     serializer_class = serializers.UserSerializer
 
 
@@ -33,19 +35,24 @@ class ClubRoleDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.ClubRoleSerializer
 
 
-class ChannelList(generics.ListCreateAPIView):
+class ChannelList(generics.ListAPIView):
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
 
 
-class ChannelDetail(generics.RetrieveUpdateDestroyAPIView):
+class ChannelDetail(generics.RetrieveUpdateAPIView):
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
 
 
 class PostList(generics.ListCreateAPIView):
-    queryset = models.Post.objects.all()
     serializer_class = serializers.PostSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the posts for channels subscribed by the user.
+        """
+        return models.Post.objects.filter(channel__subscribers__id__contains=self.request.user.id)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -54,18 +61,23 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ConversationList(generics.ListCreateAPIView):
-    queryset = models.Conversation.objects.all()
-    permission_classes = (rest_permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = serializers.ConversationSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the conversations for channels subscribed by the user.
+        """
+        # TODO: Optimize this query
+        return models.Conversation.objects.filter(channel__club__roles__members__id__contains=self.request.user.id)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
-class ConversationDetail(generics.RetrieveUpdateDestroyAPIView):
+class ConversationDetail(generics.RetrieveAPIView):
     queryset = models.Conversation.objects.all()
-    permission_classes = (rest_permissions.IsAuthenticatedOrReadOnly,
-                          permissions.IsAuthorOrReadOnly)
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsClubMemberReadOnly)
     serializer_class = serializers.ConversationSerializer
 
 

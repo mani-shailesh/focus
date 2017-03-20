@@ -3,12 +3,18 @@ from . import models
 
 
 class UserSerializer(serializers.ModelSerializer):
+    date_joined = serializers.ReadOnlyField()
+    username = serializers.ReadOnlyField()
+    id = serializers.ReadOnlyField()
+
     class Meta:
         model = models.User
         fields = ('id', 'username', 'date_joined', 'first_name', 'last_name', 'email')
 
 
 class ClubSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
     class Meta:
         model = models.Club
         fields = ('id', 'name', 'description')
