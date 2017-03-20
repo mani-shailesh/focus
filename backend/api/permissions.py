@@ -23,7 +23,7 @@ class IsSelfOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to everyone
         if request.method in permissions.SAFE_METHODS:
-                return True
+            return True
 
         # Only allow a user to edit his/her details
         return obj == request.user

@@ -5,7 +5,7 @@ from rest_framework import filters as rest_filters
 import django_filters
 
 
-class UserList(generics.ListAPIView):
+class UserList(generics.ListCreateAPIView):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
 
@@ -20,6 +20,8 @@ class UserDetail(generics.RetrieveUpdateAPIView):
 class ClubList(generics.ListCreateAPIView):
     queryset = models.Club.objects.all()
     serializer_class = serializers.ClubSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          rest_permissions.DjangoModelPermissions)
     filter_backends = (rest_filters.SearchFilter,
                        filters.MyClubsFilterBackend)
     search_fields = ('name',)
