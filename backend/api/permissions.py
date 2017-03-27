@@ -2,7 +2,7 @@ from rest_framework import permissions
 from . import models
 
 
-class IsClubMemberReadOnly(permissions.BasePermission):
+class IsClubMemberReadOnlyPost(permissions.BasePermission):
     """
     Custom permission to only allow members of a club to read objects.
     """
@@ -16,7 +16,7 @@ class IsClubMemberReadOnly(permissions.BasePermission):
         return False
 
 
-class IsSelfOrReadOnly(permissions.BasePermission):
+class IsSelfOrReadOnlyUser(permissions.BasePermission):
     """
     Custom permission to only allow a user to update his/her details but see details of everyone.
     """
@@ -29,9 +29,9 @@ class IsSelfOrReadOnly(permissions.BasePermission):
         return obj == request.user
 
 
-class IsSecyOrRepOrReadOnly(permissions.BasePermission):
+class IsSecyOrRepOrReadOnlyClub(permissions.BasePermission):
     """
-    Custom permission to only allow a secretary to write but allow everyone to read.
+    Custom permission to only allow a secretary or the club representative to write but allow everyone to read the details of a club.
     """
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to everyone
@@ -45,4 +45,15 @@ class IsSecyOrRepOrReadOnly(permissions.BasePermission):
             return request.user.has_perm('api.can_change_club') or \
                    models.ClubMembership.objects.filter(user__id=request.user.id,
                                                 club_role__club=obj,
+                                                club_role__privilege='REP').exists()
+
+
+class IsRepClubRole(permissions.BasePermission):
+    """
+    Custom permission to only allow the club representative to access a clubrole.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Only allow the club representative
+        return models.ClubMembership.objects.filter(user__id=request.user.id,
+                                                club_role__club=obj.club,
                                                 club_role__privilege='REP').exists()

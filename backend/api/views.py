@@ -13,7 +13,7 @@ class UserList(generics.ListCreateAPIView):
 class UserDetail(generics.RetrieveUpdateAPIView):
     queryset = models.User.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSelfOrReadOnly)
+                          permissions.IsSelfOrReadOnlyUser)
     serializer_class = serializers.UserSerializer
 
 
@@ -30,17 +30,20 @@ class ClubList(generics.ListCreateAPIView):
 class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Club.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSecyOrRepOrReadOnly)
+                          permissions.IsSecyOrRepOrReadOnlyClub)
     serializer_class = serializers.ClubDetailSerializer
 
 
 class ClubRoleList(generics.ListCreateAPIView):
     queryset = models.ClubRole.objects.all()
     serializer_class = serializers.ClubRoleSerializer
+    filter_backends = (filters.MyClubRolesFilterBackend,)
 
 
 class ClubRoleDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.ClubRole.objects.all()
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsRepClubRole)
     serializer_class = serializers.ClubRoleSerializer
 
 
@@ -76,7 +79,6 @@ class ConversationList(generics.ListCreateAPIView):
         """
         This view should return a list of all the conversations for channels subscribed by the user.
         """
-        # TODO: Optimize this query
         return models.Conversation.objects.filter(channel__club__roles__members__id__contains=self.request.user.id)
 
     def perform_create(self, serializer):
@@ -86,7 +88,7 @@ class ConversationList(generics.ListCreateAPIView):
 class ConversationDetail(generics.RetrieveAPIView):
     queryset = models.Conversation.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsClubMemberReadOnly)
+                          permissions.IsClubMemberReadOnlyPost)
     serializer_class = serializers.ConversationSerializer
 
 
