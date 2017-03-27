@@ -29,11 +29,16 @@ class ClubRoleSerializer(serializers.ModelSerializer):
 
 
 class ClubDetailSerializer(serializers.ModelSerializer):
-    roles = ClubRoleSerializer(many=True, read_only=True)
+    members = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Club
-        fields = ('id', 'name', 'description', 'roles')
+        fields = ('id', 'name', 'description', 'members')
+
+    def get_members(self, obj):
+        queryset = models.User.objects.filter(clubrole__club=obj)
+        serializer = UserSerializer(instance=queryset, many=True)
+        return serializer.data
 
 
 class ProjectSerializer(serializers.ModelSerializer):
