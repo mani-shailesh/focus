@@ -31,7 +31,7 @@ class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Club.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsSecyOrRepOrReadOnly)
-    serializer_class = serializers.ClubSerializer
+    serializer_class = serializers.ClubDetailSerializer
 
 
 class ClubRoleList(generics.ListCreateAPIView):

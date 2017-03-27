@@ -21,9 +21,19 @@ class ClubSerializer(serializers.ModelSerializer):
 
 
 class ClubRoleSerializer(serializers.ModelSerializer):
+    members = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = models.ClubRole
-        fields = ('id', 'name', 'description', 'club', 'privilege')
+        fields = ('id', 'name', 'description', 'club', 'privilege', 'members')
+
+
+class ClubDetailSerializer(serializers.ModelSerializer):
+    roles = ClubRoleSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Club
+        fields = ('id', 'name', 'description', 'roles')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
