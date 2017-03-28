@@ -5,8 +5,10 @@
 A managerial networking product for clubs operating in an educational institute
 
 ## Installation Instructions
-* ``` pip install -r requirements.txt ```
-* Make a copy of ```credentials.py``` in the same folder as credentials.py.template and fill in the credentials.
+* Clone the repo using ```git clone https://github.com/mani-shailesh/clubnet.git```
+* ```cd clubnet```
+* ```pip install -r requirements.txt```
+* Make a copy of ```credentials.py``` in the same folder as credentials.py.template and fill in the credentials. <br />
 **NOTE : Do not push ```credentials.py``` in the repo. It should be restricted for your personal use only.**
 * Make a database with the name ```clubnet_db``` in MySQL.
 * ```python manage.py migrate```
