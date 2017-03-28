@@ -3,3 +3,13 @@
 
 ## Description
 A managerial networking product for clubs operating in an educational institute
+
+## Installation Instructions
+* ``` pip install -r requirements.txt ```
+* Make a copy of ```credentials.py``` in the same folder as credentials.py.template and fill in the credentials.
+**NOTE : Do not push ```credentials.py``` in the repo. It should be restricted for your personal use only.**
+* Make a database with the name ```clubnet_db``` in MySQL.
+* ```python manage.py migrate```
+* ```python manage.py runserver```
+* Type ```http://localhost:8000/clubs/``` to check if it's working!
+
