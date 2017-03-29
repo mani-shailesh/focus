@@ -13,5 +13,5 @@ A managerial networking product for clubs operating in an educational institute
 * Make a database with the name ```clubnet_db``` in MySQL.
 * ```python manage.py migrate```
 * ```python manage.py runserver```
-* Type ```http://localhost:8000/clubs/``` to check if it's working!
+* Type ```http://localhost:8000/api/clubs/``` to check if it's working!
 
