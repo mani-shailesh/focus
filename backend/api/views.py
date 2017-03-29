@@ -118,6 +118,7 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
 class FeedbackList(generics.ListCreateAPIView):
     queryset = models.Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
+    filter_backends = (filters.MyClubFeedbacksFilterBackend,)
 
 
 class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
