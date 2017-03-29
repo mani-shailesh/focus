@@ -90,3 +90,17 @@ class IsSecyOrRepOrAuthorFeedback(permissions.BasePermission):
         # Do not allow write permissions to anyone
         else:
             return False
+
+
+class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
+    """
+    Custom permission to only allow a secretary or the club representative or author to read the details of a feedbackReply.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return obj.parent.author == request.user or request.user.has_perm(
+                "api.can_change_feedbackreply") or models.ClubMembership.objects.filter(user__id=request.user.id, club_role__club=obj.parent.club, club_role__privilege='REP').exists()
+        # Do not allow write permissions to anyone
+        else:
+            return False

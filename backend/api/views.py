@@ -128,11 +128,12 @@ class FeedbackDetail(generics.RetrieveAPIView):
                           permissions.IsSecyOrRepOrAuthorFeedback)
 
 
-class FeedbackReplyList(generics.ListCreateAPIView):
-    queryset = models.FeedbackReply.objects.all()
+class FeedbackReplyCreate(generics.CreateAPIView):
     serializer_class = serializers.FeedbackReplySerializer
 
 
 class FeedbackReplyDetail(generics.RetrieveAPIView):
     queryset = models.FeedbackReply.objects.all()
-    serializer_class = serializers.FeedbackReplySerializer
+    serializer_class = serializers.FeedbackReplyDetailSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsSecyOrRepOrAuthorFeedbackReply)

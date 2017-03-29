@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^projects/(?P<pk>[0-9]+)/$', views.ProjectDetail.as_view()),
     url(r'^feedbacks/$', views.FeedbackList.as_view()),
     url(r'^feedbacks/(?P<pk>[0-9]+)/$', views.FeedbackDetail.as_view()),
-    url(r'^feedbackreplies/$', views.FeedbackReplyList.as_view()),
+    url(r'^feedbackreplies/$', views.FeedbackReplyCreate.as_view()),
     url(r'^feedbackreplies/(?P<pk>[0-9]+)/$', views.FeedbackReplyDetail.as_view()),
 ]
 
