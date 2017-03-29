@@ -47,7 +47,7 @@ class ClubRoleDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.ClubRoleSerializer
 
 
-class ClubMembershipList(generics.ListCreateAPIView):
+class ClubMembershipList(generics.ListAPIView):
     queryset = models.ClubMembership.objects.all()
     serializer_class = serializers.ClubMembershipSerializer
     filter_backends = (filters.MyClubMembershipsFilterBackend,)
