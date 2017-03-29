@@ -121,9 +121,11 @@ class FeedbackList(generics.ListCreateAPIView):
     filter_backends = (filters.MyClubFeedbacksFilterBackend,)
 
 
-class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
+class FeedbackDetail(generics.RetrieveAPIView):
     queryset = models.Feedback.objects.all()
-    serializer_class = serializers.FeedbackSerializer
+    serializer_class = serializers.FeedbackDetailSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsSecyOrRepOrAuthorFeedback)
 
 
 class FeedbackReplyList(generics.ListCreateAPIView):
@@ -131,6 +133,6 @@ class FeedbackReplyList(generics.ListCreateAPIView):
     serializer_class = serializers.FeedbackReplySerializer
 
 
-class FeedbackReplyDetail(generics.RetrieveUpdateDestroyAPIView):
+class FeedbackReplyDetail(generics.RetrieveAPIView):
     queryset = models.FeedbackReply.objects.all()
     serializer_class = serializers.FeedbackReplySerializer

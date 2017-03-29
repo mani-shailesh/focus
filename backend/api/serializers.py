@@ -81,14 +81,33 @@ class ConversationSerializer(serializers.ModelSerializer):
 
 class FeedbackSerializer(serializers.ModelSerializer):
     created = serializers.ReadOnlyField()
+    feedbackreply = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = models.Feedback
-        fields = ('id', 'content', 'created', 'club', 'author')
+        fields = ('id', 'content', 'created', 'club', 'author', 'feedbackreply')
 
 
 class FeedbackReplySerializer(serializers.ModelSerializer):
     created = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.FeedbackReply
+        fields = ('id', 'content', 'created')
+
+
+class FeedbackDetailSerializer(serializers.ModelSerializer):
+    created = serializers.ReadOnlyField()
+    feedbackreply = FeedbackReplySerializer(read_only=True)
+
+    class Meta:
+        model = models.Feedback
+        fields = ('id', 'content', 'created', 'club', 'author', 'feedbackreply')
+
+
+class FeedbackReplyDetailSerializer(serializers.ModelSerializer):
+    created = serializers.ReadOnlyField()
+    parent = FeedbackSerializer(read_only=True)
 
     class Meta:
         model = models.FeedbackReply
