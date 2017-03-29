@@ -50,10 +50,21 @@ class IsSecyOrRepOrReadOnlyClub(permissions.BasePermission):
 
 class IsRepClubRole(permissions.BasePermission):
     """
-    Custom permission to only allow the club representative to access a clubrole.
+    Custom permission to only allow the club representative to access a clubRole.
     """
     def has_object_permission(self, request, view, obj):
         # Only allow the club representative
         return models.ClubMembership.objects.filter(user__id=request.user.id,
                                                 club_role__club=obj.club,
+                                                club_role__privilege='REP').exists()
+
+
+class IsRepClubMembership(permissions.BasePermission):
+    """
+    Custom permission to only allow the club representative to access a clubMembership.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Only allow the club representative
+        return models.ClubMembership.objects.filter(user__id=request.user.id,
+                                                club_role__club=obj.club_role.club,
                                                 club_role__privilege='REP').exists()

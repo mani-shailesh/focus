@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^clubs/(?P<pk>[0-9]+)/$', views.ClubDetail.as_view()),
     url(r'^clubroles/$', views.ClubRoleList.as_view()),
     url(r'^clubroles/(?P<pk>[0-9]+)/$', views.ClubRoleDetail.as_view()),
+    url(r'^clubmembers/$', views.ClubMembershipList.as_view()),
+    url(r'^clubmembers/(?P<pk>[0-9]+)/$', views.ClubMembershipDetail.as_view()),
     url(r'^channels/$', views.ChannelList.as_view()),
     url(r'^channels/(?P<pk>[0-9]+)/$', views.ChannelDetail.as_view()),
     url(r'^posts/$', views.PostList.as_view()),

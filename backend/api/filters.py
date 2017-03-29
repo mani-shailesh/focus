@@ -23,3 +23,14 @@ class MyClubRolesFilterBackend(rest_framework_filters.BaseFilterBackend):
             club__roles__members__id__contains=request.user.id,
         )
         return queryset
+
+
+class MyClubMembershipsFilterBackend(rest_framework_filters.BaseFilterBackend):
+    """
+    Filter that only allows club members to see club roles of their clubs.
+    """
+    def filter_queryset(self, request, queryset, view):
+        queryset = queryset.filter(
+            club_role__club__roles__members__id__contains=request.user.id,
+        )
+        return queryset
