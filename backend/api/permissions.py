@@ -25,6 +25,23 @@ class IsRepOrReadOnlyPost(permissions.BasePermission):
             ).exists()
 
 
+class IsClubMemberReadOnlyConversation(permissions.BasePermission):
+    """
+    Custom permission to allow only club members to read conversations and do not allow anyone to write.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to only club members
+        if request.method in permissions.SAFE_METHODS:
+            return models.ClubMembership.objects.filter(
+                user__id=request.user.id,
+                club_role__club=obj.channel.club
+            ).exists()
+
+        # Write permissions are denied to everyone.
+        return False
+
+
 class IsSelfOrReadOnlyUser(permissions.BasePermission):
     """
     Custom permission to only allow a user to update his/her details but see details of everyone.

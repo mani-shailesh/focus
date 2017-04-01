@@ -70,9 +70,11 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    created = serializers.ReadOnlyField()
+
     class Meta:
         model = models.Post
-        fields = ('id', 'content', 'channel')
+        fields = ('id', 'content', 'created', 'channel')
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
@@ -87,6 +89,16 @@ class PostDetailSerializer(serializers.ModelSerializer):
 class ConversationSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
     created = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.Conversation
+        fields = ('id', 'content', 'created', 'channel', 'author', 'parent')
+
+
+class ConversationDetailSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+    created = serializers.ReadOnlyField()
+    parent = ConversationSerializer(read_only=True)
 
     class Meta:
         model = models.Conversation

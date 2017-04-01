@@ -97,8 +97,9 @@ class ConversationList(generics.ListCreateAPIView):
 
 class ConversationDetail(generics.RetrieveAPIView):
     queryset = models.Conversation.objects.all()
-    permission_classes = (rest_permissions.IsAuthenticated,)
-    serializer_class = serializers.ConversationSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsClubMemberReadOnlyConversation)
+    serializer_class = serializers.ConversationDetailSerializer
 
 
 class ProjectList(generics.ListCreateAPIView):
