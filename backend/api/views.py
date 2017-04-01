@@ -114,7 +114,7 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectDetailSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSecyOrClubMemberProject)
+                          permissions.IsRepOrSecyAndClubMemberReadOnlyProject)
 
 
 class FeedbackList(generics.ListCreateAPIView):
