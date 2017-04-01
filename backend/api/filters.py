@@ -1,6 +1,7 @@
 from . import models
 from rest_framework import filters as rest_framework_filters
 from django.db.models import Q
+from .permissions import is_secretary
 
 
 class MyClubsFilterBackend(rest_framework_filters.BaseFilterBackend):
@@ -51,7 +52,7 @@ class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
         club_id = int(request.query_params.get('club_id', -1))
 
         # Allow secretary to view feedbacks for all or selected clubs
-        if request.user.has_perm("api.can_delete_feedback"):
+        if is_secretary(request.user):
             if club_id != -1:
                 queryset = queryset.filter(club__id=club_id)
         # Allow club representatives to only view feedbacks for their clubs
