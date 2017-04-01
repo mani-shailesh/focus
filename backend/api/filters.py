@@ -1,6 +1,6 @@
 from . import models
 from rest_framework import filters as rest_framework_filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ParseError
 from django.db.models import Q
 from .permissions import is_secretary
 
@@ -50,7 +50,10 @@ class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        club_id = int(request.query_params.get('club_id', -1))
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+        except:
+            raise ParseError
 
         # Allow secretary to view feedbacks for all or selected clubs
         if is_secretary(request.user):
@@ -86,7 +89,10 @@ class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        club_id = int(request.query_params.get('club_id', -1))
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+        except:
+            raise ParseError
 
         # Allow secretary to view projects of all clubs or a selected club
         if is_secretary(request.user):
@@ -112,10 +118,15 @@ class MyPostsFilterBackend(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
     Users to see posts by channels that they have subscribed or of a selected channel
+    Impose an ascending or descending order on the posts as per their `created` attribute
     """
 
     def filter_queryset(self, request, queryset, view):
-        channel_id = int(request.query_params.get('channel_id', -1))
+        try:
+            channel_id = int(request.query_params.get('channel_id', -1))
+            order = int(request.query_params.get('order', -1))
+        except:
+            raise ParseError
 
         if channel_id != -1:
             # Filter all posts by the specified channel
@@ -123,4 +134,10 @@ class MyPostsFilterBackend(rest_framework_filters.BaseFilterBackend):
         # Filter posts by the channel subscribed by the user
         else:
             queryset = queryset.filter(channel__subscribers__id__contains=request.user.id)
+
+        if order == -1:
+            queryset.order_by('-created')
+        else:
+            queryset.order_by('created')
+
         return queryset
