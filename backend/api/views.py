@@ -79,7 +79,9 @@ class PostList(generics.ListCreateAPIView):
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Post.objects.all()
-    serializer_class = serializers.PostSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsRepOrReadOnlyPost)
+    serializer_class = serializers.PostDetailSerializer
 
 
 class ConversationList(generics.ListCreateAPIView):
@@ -97,8 +99,7 @@ class ConversationList(generics.ListCreateAPIView):
 
 class ConversationDetail(generics.RetrieveAPIView):
     queryset = models.Conversation.objects.all()
-    permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsClubMemberReadOnlyPost)
+    permission_classes = (rest_permissions.IsAuthenticated,)
     serializer_class = serializers.ConversationSerializer
 
 

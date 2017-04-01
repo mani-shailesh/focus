@@ -70,7 +70,14 @@ class ChannelSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Post
+        fields = ('id', 'content', 'channel')
+
+
+class PostDetailSerializer(serializers.ModelSerializer):
     created = serializers.ReadOnlyField()
+    channel = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = models.Post
