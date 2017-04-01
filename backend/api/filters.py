@@ -1,5 +1,6 @@
 from . import models
 from rest_framework import filters as rest_framework_filters
+from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from .permissions import is_secretary
 
@@ -74,4 +75,34 @@ class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
                     roles__members__id__contains=request.user.id
                 )
                 queryset = queryset.filter(Q(club__in=club_list) | Q(author=request.user))
+        return queryset
+
+
+class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
+    """
+    Filter that allows:
+    Users to see projects of clubs that they are member of
+    Secretaries to see projects of all clubs or a selected club 
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        club_id = int(request.query_params.get('club_id', -1))
+
+        # Allow secretary to view projects of all clubs or a selected club
+        if is_secretary(request.user):
+            if club_id != -1:
+                queryset = queryset.filter(clubs__id__contains=club_id)
+        # Allow club members to only view projects of their clubs
+        else:
+            if club_id != -1:
+                # Allow to see all projects only if user is member of this club
+                if models.ClubMembership.objects.filter(user__id=request.user.id,
+                                                        club_role__club__id=club_id).exists():
+                    queryset = queryset.filter(clubs__id__contains=club_id)
+                # Otherwise raise PermissionDenied exception
+                else:
+                    raise PermissionDenied
+            # Filter projects of all clubs for which the user is a member
+            else:
+                queryset = queryset.filter(clubs__roles__members__id__contains=request.user.id)
         return queryset
