@@ -4,7 +4,7 @@ from . import models
 
 def is_secretary(user_obj):
     """A helper function to check if the `user_obj` is a secretary"""
-    pass
+    return user_obj.is_superuser
 
 
 class IsClubMemberReadOnlyPost(permissions.BasePermission):
