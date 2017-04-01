@@ -85,13 +85,11 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ConversationList(generics.ListCreateAPIView):
+    queryset = models.Conversation.objects.all()
     serializer_class = serializers.ConversationSerializer
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the conversations for channels subscribed by the user.
-        """
-        return models.Conversation.objects.filter(channel__club__roles__members__id__contains=self.request.user.id)
+    filter_backends = (rest_filters.SearchFilter,
+                       filters.MyConversationsFilterBackend)
+    search_fields = ('content',)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
