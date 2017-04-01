@@ -1,6 +1,6 @@
 from . import models
 from rest_framework import filters as rest_framework_filters
-from rest_framework.exceptions import PermissionDenied, ParseError
+from rest_framework.exceptions import ParseError
 from django.db.models import Q
 from .permissions import is_secretary
 
@@ -52,32 +52,32 @@ class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         try:
             club_id = int(request.query_params.get('club_id', -1))
+            order = int(request.query_params.get('order', -1))
+            only_my_feedbacks = bool(int(request.query_params.get('only_my', 0)))
         except:
             raise ParseError
 
         # Allow secretary to view feedbacks for all or selected clubs
-        if is_secretary(request.user):
-            if club_id != -1:
-                queryset = queryset.filter(club__id=club_id)
-        # Allow club representatives to only view feedbacks for their clubs
-        else:
-            if club_id != -1:
-                # Allow to see all feedbacks only if user is representative of this club
-                if models.ClubMembership.objects.filter(user__id=request.user.id,
-                                                        club_role__club__id=club_id,
-                                                        club_role__privilege='REP').exists():
-                    queryset = queryset.filter(club__id=club_id)
-                # Otherwise only show feedbacks posted by the user
-                else:
-                    queryset = queryset.filter(club__id=club_id, author=request.user)
+        if not is_secretary(request.user):
             # Filter feedbacks of all clubs for which the user is representative
             # or the feedbacks which have been posted by the user
-            else:
-                club_list = models.Club.objects.filter(
-                    roles__privilege='REP',
-                    roles__members__id__contains=request.user.id
-                )
-                queryset = queryset.filter(Q(club__in=club_list) | Q(author=request.user))
+            club_list = models.Club.objects.filter(
+                roles__privilege='REP',
+                roles__members__id__contains=request.user.id
+            )
+            queryset = queryset.filter(Q(club__in=club_list) | Q(author=request.user))
+
+        if club_id != -1:
+            queryset = queryset.filter(club__id=club_id)
+
+        if only_my_feedbacks:
+            queryset = queryset.filter(author__id=request.user.id)
+
+        if order == -1:
+            queryset = queryset.order_by('-created')
+        else:
+            queryset = queryset.order_by('created')
+
         return queryset
 
 
@@ -91,26 +91,23 @@ class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         try:
             club_id = int(request.query_params.get('club_id', -1))
+            only_my_projects = bool(int(request.query_params.get('only_my', 0)))
+
         except:
             raise ParseError
 
         # Allow secretary to view projects of all clubs or a selected club
-        if is_secretary(request.user):
-            if club_id != -1:
-                queryset = queryset.filter(clubs__id__contains=club_id)
         # Allow club members to only view projects of their clubs
-        else:
-            if club_id != -1:
-                # Allow to see all projects only if user is member of this club
-                if models.ClubMembership.objects.filter(user__id=request.user.id,
-                                                        club_role__club__id=club_id).exists():
-                    queryset = queryset.filter(clubs__id__contains=club_id)
-                # Otherwise raise PermissionDenied exception
-                else:
-                    raise PermissionDenied
+        if not is_secretary(request.user):
             # Filter projects of all clubs for which the user is a member
-            else:
-                queryset = queryset.filter(clubs__roles__members__id__contains=request.user.id)
+            queryset = queryset.filter(clubs__roles__members__id__contains=request.user.id)
+
+        if club_id != -1:
+            queryset = queryset.filter(clubs__id__contains=club_id)
+
+        if only_my_projects:
+            queryset = queryset.filter(members__id__contains=request.user.id)
+
         return queryset
 
 
@@ -152,6 +149,7 @@ class MyConversationsFilterBackend(rest_framework_filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         try:
+            parent_id = int(request.query_params.get('parent_id', -1))
             channel_id = int(request.query_params.get('channel_id', -1))
             order = int(request.query_params.get('order', -1))
             only_my_conversations = bool(int(request.query_params.get('only_my', 0)))
@@ -159,17 +157,15 @@ class MyConversationsFilterBackend(rest_framework_filters.BaseFilterBackend):
         except:
             raise ParseError
 
+        # Filter conversations by the channel of clubs that the user is a member of
+        queryset = queryset.filter(channel__club__roles__members__id__contains=request.user.id)
+
+        if parent_id != -1:
+            queryset = queryset.filter(parent__id=parent_id)
+            include_replies = True
+
         if channel_id != -1:
-            # Allow to see conversations only if user is a member of this club
-            if models.ClubMembership.objects.filter(user__id=request.user.id,
-                                                    club_role__club__channel__id=channel_id).exists():
-                queryset = queryset.filter(channel__id=channel_id)
-            # Otherwise raise PermissionDenied exception
-            else:
-                raise PermissionDenied
-        else:
-            # Filter conversations by the channel of clubs that the user is a member of
-            queryset = queryset.filter(channel__club__roles__members__id__contains=request.user.id)
+            queryset = queryset.filter(channel__id=channel_id)
 
         if not include_replies:
             queryset = queryset.filter(parent__isnull=True)
