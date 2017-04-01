@@ -2,7 +2,6 @@ from . import models, serializers, permissions, filters
 from rest_framework import generics
 from rest_framework import permissions as rest_permissions
 from rest_framework import filters as rest_filters
-import django_filters
 
 
 class UserList(generics.ListCreateAPIView):

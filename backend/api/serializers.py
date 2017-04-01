@@ -27,6 +27,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         model = models.Club
         fields = ('id', 'name', 'description', 'members')
 
+    # noinspection PyMethodMayBeStatic
     def get_members(self, obj):
         queryset = models.User.objects.filter(clubrole__club=obj).distinct()
         serializer = UserSerializer(instance=queryset, many=True)

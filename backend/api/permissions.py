@@ -39,7 +39,8 @@ class IsSelfOrReadOnlyUser(permissions.BasePermission):
 
 class IsSecyOrRepOrReadOnlyClub(permissions.BasePermission):
     """
-    Custom permission to only allow a secretary or the club representative to write but allow everyone to read the details of a club.
+    Custom permission to only allow a secretary or the club representative to write 
+    but allow everyone to read the details of a club.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -99,7 +100,8 @@ class IsSecyOrRepOrAuthorFeedback(permissions.BasePermission):
 
 class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
     """
-    Custom permission to only allow a secretary or the club representative or author to read the details of a feedbackReply.
+    Custom permission to only allow a secretary or the club representative 
+    or author to read the details of a feedbackReply.
     """
 
     def has_object_permission(self, request, view, obj):
