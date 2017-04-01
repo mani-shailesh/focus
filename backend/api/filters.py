@@ -106,3 +106,21 @@ class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
             else:
                 queryset = queryset.filter(clubs__roles__members__id__contains=request.user.id)
         return queryset
+
+
+class MyPostsFilterBackend(rest_framework_filters.BaseFilterBackend):
+    """
+    Filter that allows:
+    Users to see posts by channels that they have subscribed or of a selected channel
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        channel_id = int(request.query_params.get('channel_id', -1))
+
+        if channel_id != -1:
+            # Filter all posts by the specified channel
+            queryset = queryset.filter(channel__id=channel_id)
+        # Filter posts by the channel subscribed by the user
+        else:
+            queryset = queryset.filter(channel__subscribers__id__contains=request.user.id)
+        return queryset

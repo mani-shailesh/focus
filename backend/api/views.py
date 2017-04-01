@@ -70,13 +70,11 @@ class ChannelDetail(generics.RetrieveUpdateAPIView):
 
 
 class PostList(generics.ListCreateAPIView):
+    queryset = models.Post.objects.all()
     serializer_class = serializers.PostSerializer
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the posts for channels subscribed by the user.
-        """
-        return models.Post.objects.filter(channel__subscribers__id__contains=self.request.user.id)
+    filter_backends = (rest_filters.SearchFilter,
+                       filters.MyPostsFilterBackend)
+    search_fields = ('content',)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
