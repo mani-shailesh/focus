@@ -49,6 +49,12 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Project
+        fields = ('id', 'name', 'description')
+
+
+class ProjectDetailSerializer(serializers.ModelSerializer):
     started = serializers.ReadOnlyField()
 
     class Meta:

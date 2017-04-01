@@ -111,3 +111,19 @@ class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
         # Do not allow write permissions to anyone
         else:
             return False
+
+
+class IsSecyOrClubMemberProject(permissions.BasePermission):
+    """
+    Custom permission to only allow a secretary or the club members to read the details of a project.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return is_secretary(request.user) or models.ClubMembership.objects.filter(
+                user__id=request.user.id,
+                club_role__club__in=obj.clubs.all()
+            ).exists()
+        # Do not allow write permissions to anyone
+        else:
+            return False

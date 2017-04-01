@@ -108,13 +108,14 @@ class ConversationDetail(generics.RetrieveAPIView):
 class ProjectList(generics.ListCreateAPIView):
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
-    permission_classes = (rest_permissions.IsAuthenticated,)
     filter_backends = (filters.MyProjectsFilterBackend,)
 
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Project.objects.all()
-    serializer_class = serializers.ProjectSerializer
+    serializer_class = serializers.ProjectDetailSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsSecyOrClubMemberProject)
 
 
 class FeedbackList(generics.ListCreateAPIView):
