@@ -1,18 +1,29 @@
+"""
+This modules contains classes to define serialization of Models.
+"""
+
 from rest_framework import serializers
 from . import models
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer for User.
+    """
     date_joined = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
 
     class Meta:
         model = models.User
-        fields = ('id', 'username', 'date_joined', 'first_name', 'last_name', 'email')
+        fields = ('id', 'username', 'date_joined', 'first_name',
+                  'last_name', 'email')
 
 
 class ClubSerializer(serializers.ModelSerializer):
+    """
+    Compact serializer for Club.
+    """
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -21,28 +32,41 @@ class ClubSerializer(serializers.ModelSerializer):
 
 
 class ClubDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for Club.
+    """
     members = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Club
         fields = ('id', 'name', 'description', 'members')
 
-    # noinspection PyMethodMayBeStatic
     def get_members(self, obj):
+        """
+        Method to populate the `members` of a Club.
+        """
         queryset = models.User.objects.filter(clubrole__club=obj).distinct()
         serializer = UserSerializer(instance=queryset, many=True)
         return serializer.data
 
 
 class ClubRoleSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a ClubRole.
+    """
     class Meta:
         model = models.ClubRole
         fields = ('id', 'name', 'description', 'club', 'privilege')
 
 
 class ClubMembershipSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=models.User.objects.all())
-    club_role = serializers.PrimaryKeyRelatedField(queryset=models.ClubRole.objects.all())
+    """
+    Serializer to represent membership of a User in a Club through a ClubRole.
+    """
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=models.User.objects.all())
+    club_role = serializers.PrimaryKeyRelatedField(
+        queryset=models.ClubRole.objects.all())
 
     class Meta:
         model = models.ClubMembership
@@ -50,26 +74,61 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    """
+    Compact serializer for a Project.
+    """
     class Meta:
         model = models.Project
         fields = ('id', 'name', 'description')
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for a Project.
+    """
     started = serializers.ReadOnlyField()
 
     class Meta:
         model = models.Project
-        fields = ('id', 'name', 'description', 'started', 'closed', 'leader', 'members', 'clubs')
+        fields = ('id', 'name', 'description', 'started',
+                  'closed', 'leader', 'members', 'clubs')
 
 
 class ChannelSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a Channel.
+    """
+    club = ClubSerializer(read_only=True)
+
     class Meta:
         model = models.Channel
         fields = ('id', 'name', 'description', 'club')
 
 
+class ChannelDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for a Channel.
+    """
+    club = ClubSerializer(read_only=True)
+    subscribers = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Channel
+        fields = ('id', 'name', 'description', 'club', 'subscribers')
+
+    def get_subscribers(self, obj):
+        """
+        Method to populate the subscribers of a Channel.
+        """
+        queryset = models.User.objects.filter(channel=obj)
+        serializer = UserSerializer(instance=queryset, many=True)
+        return serializer.data
+
+
 class PostSerializer(serializers.ModelSerializer):
+    """
+    Compact serializer for a Post.
+    """
     created = serializers.ReadOnlyField()
 
     class Meta:
@@ -78,6 +137,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for a Post.
+    """
     created = serializers.ReadOnlyField()
     channel = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -87,6 +149,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a Conversation.
+    """
     author = serializers.ReadOnlyField(source='author.username')
     created = serializers.ReadOnlyField()
 
@@ -96,6 +161,9 @@ class ConversationSerializer(serializers.ModelSerializer):
 
 
 class ConversationDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for a Conversation.
+    """
     author = serializers.ReadOnlyField(source='author.username')
     created = serializers.ReadOnlyField()
     parent = ConversationSerializer(read_only=True)
@@ -106,15 +174,22 @@ class ConversationDetailSerializer(serializers.ModelSerializer):
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a Feedback.
+    """
     created = serializers.ReadOnlyField()
     feedbackreply = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = models.Feedback
-        fields = ('id', 'content', 'created', 'club', 'author', 'feedbackreply')
+        fields = ('id', 'content', 'created', 'club',
+                  'author', 'feedbackreply')
 
 
 class FeedbackReplySerializer(serializers.ModelSerializer):
+    """
+    Serializer for a FeedbackReply.
+    """
     created = serializers.ReadOnlyField()
 
     class Meta:
@@ -123,15 +198,22 @@ class FeedbackReplySerializer(serializers.ModelSerializer):
 
 
 class FeedbackDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for a Feedback.
+    """
     created = serializers.ReadOnlyField()
     feedbackreply = FeedbackReplySerializer(read_only=True)
 
     class Meta:
         model = models.Feedback
-        fields = ('id', 'content', 'created', 'club', 'author', 'feedbackreply')
+        fields = ('id', 'content', 'created', 'club',
+                  'author', 'feedbackreply')
 
 
 class FeedbackReplyDetailSerializer(serializers.ModelSerializer):
+    """
+    Detailed serializer for a FeedbackReply.
+    """
     created = serializers.ReadOnlyField()
     parent = FeedbackSerializer(read_only=True)
 
