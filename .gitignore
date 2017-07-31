@@ -91,3 +91,9 @@ backend/backend/credentials.py
 
 # Pycharm files
 .idea/
+
+# Swap files
+*.swp
+
+# Documentation
+docs/
