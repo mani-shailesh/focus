@@ -207,8 +207,20 @@ class MyChannelsFilterBackend(rest_framework_filters.BaseFilterBackend):
     """
 
     def filter_queryset(self, request, queryset, view):
-        only_my_channels = bool(int(request.query_params.get('only_my', 0)))
+        try:
+            only_my_channels = bool(int(
+                request.query_params.get('only_my', 0)))
+            club_id = int(request.query_params.get('club_id', -1))
+        except:
+            raise ParseError
+
+        if club_id != -1:
+            queryset = queryset.filter(
+                club__id=club_id
+            )
+
         if only_my_channels:
             queryset = queryset.filter(
                 subscribers__id__contains=request.user.id)
+
         return queryset

@@ -100,7 +100,9 @@ class ChannelList(generics.ListAPIView):
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
     permission_classes = (rest_permissions.IsAuthenticated,)
-    filter_backends = (filters.MyChannelsFilterBackend,)
+    filter_backends = (rest_filters.SearchFilter,
+                       filters.MyChannelsFilterBackend)
+    search_fields = ('name',)
 
 
 class ChannelDetail(generics.RetrieveUpdateAPIView):
