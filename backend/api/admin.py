@@ -1,12 +1,20 @@
+"""
+This module declares Admin class and registers Models to it.
+"""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AbstractUserAdmin
 from . import models
 
 
-# Register your models here.
 class UserAdmin(AbstractUserAdmin):
+    """
+    Wrapper class for AbstractUserAdmin.
+    """
     model = models.User
 
+
+# Register the models.
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Club)
 admin.site.register(models.Project)
