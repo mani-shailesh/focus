@@ -3,28 +3,21 @@ This module contains the controllers attached to the API endpoints.
 """
 
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework import permissions as rest_permissions
 from rest_framework import filters as rest_filters
 
 from . import models, serializers, permissions, filters
 
 
-class UserList(generics.ListCreateAPIView):
+class UserViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of users
+    Viewset to provide actions related to Users.
     """
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
-
-
-class UserDetail(generics.RetrieveUpdateAPIView):
-    """
-    View to allow retrieval and updation of the details of a user
-    """
-    queryset = models.User.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsSelfOrReadOnlyUser)
-    serializer_class = serializers.UserSerializer
 
 
 class ClubList(generics.ListCreateAPIView):

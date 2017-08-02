@@ -4,12 +4,15 @@ This module registers URL patterns for the 'api' app.
 
 from django.conf.urls import url, include
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import DefaultRouter
 
 from . import views
 
+# Create a router and register the Viewsets with it.
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
+
 urlpatterns = [
-    url(r'^users/$', views.UserList.as_view()),
-    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
     url(r'^clubs/$', views.ClubList.as_view()),
     url(r'^clubs/(?P<pk>[0-9]+)/$', views.ClubDetail.as_view()),
     url(r'^clubroles/$', views.ClubRoleList.as_view()),
@@ -36,6 +39,7 @@ urlpatterns = [
 urlpatterns = format_suffix_patterns(urlpatterns)
 
 urlpatterns += [
+    url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
 ]
