@@ -11,10 +11,9 @@ from . import views
 # Create a router and register the Viewsets with it.
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'clubs', views.ClubViewSet)
 
 urlpatterns = [
-    url(r'^clubs/$', views.ClubList.as_view()),
-    url(r'^clubs/(?P<pk>[0-9]+)/$', views.ClubDetail.as_view()),
     url(r'^clubroles/$', views.ClubRoleList.as_view()),
     url(r'^clubroles/(?P<pk>[0-9]+)/$', views.ClubRoleDetail.as_view()),
     url(r'^clubmembers/$', views.ClubMembershipList.as_view()),

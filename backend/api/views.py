@@ -6,6 +6,8 @@ from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import permissions as rest_permissions
 from rest_framework import filters as rest_filters
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 
 from . import models, serializers, permissions, filters
 
@@ -20,28 +22,33 @@ class UserViewSet(viewsets.ModelViewSet):
                           permissions.IsSelfOrReadOnlyUser)
 
 
-class ClubList(generics.ListCreateAPIView):
+class ClubViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of clubs as specified by
-    query parameters and to create clubs
+    Viewset to provide actions for a Club
     """
     queryset = models.Club.objects.all()
     serializer_class = serializers.ClubSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          rest_permissions.DjangoModelPermissions)
+                          rest_permissions.DjangoModelPermissions,
+                          permissions.IsSecyOrRepOrReadOnlyClub)
     filter_backends = (rest_filters.SearchFilter,
                        filters.MyClubsFilterBackend)
     search_fields = ('name',)
 
+    @detail_route(methods=['get'])
+    def members(self, request, pk=None):
+        """
+        Return a list of the Users who are members of this club as response.
+        """
+        club = self.get_object()
+        queryset = models.User.objects.filter(clubrole__club=club).distinct()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = serializers.UserSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    View to allow retrieval updation and deletion of the details of a club
-    """
-    queryset = models.Club.objects.all()
-    permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSecyOrRepOrReadOnlyClub)
-    serializer_class = serializers.ClubDetailSerializer
+        serializer = serializers.UserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ClubRoleList(generics.ListCreateAPIView):

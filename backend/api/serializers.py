@@ -31,25 +31,6 @@ class ClubSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description')
 
 
-class ClubDetailSerializer(serializers.ModelSerializer):
-    """
-    Detailed serializer for Club.
-    """
-    members = serializers.SerializerMethodField()
-
-    class Meta:
-        model = models.Club
-        fields = ('id', 'name', 'description', 'members')
-
-    def get_members(self, obj):
-        """
-        Method to populate the `members` of a Club.
-        """
-        queryset = models.User.objects.filter(clubrole__club=obj).distinct()
-        serializer = UserSerializer(instance=queryset, many=True)
-        return serializer.data
-
-
 class ClubRoleSerializer(serializers.ModelSerializer):
     """
     Serializer for a ClubRole.
