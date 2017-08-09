@@ -51,25 +51,15 @@ class ClubViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class ClubRoleList(generics.ListCreateAPIView):
+class ClubRoleViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of club roles as specified
-    by query parameters and to create club roles
+    Viewset to provide actions for a ClubRole
     """
     queryset = models.ClubRole.objects.all()
     serializer_class = serializers.ClubRoleSerializer
-    filter_backends = (filters.MyClubRolesFilterBackend,)
-
-
-class ClubRoleDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    View to allow retrieval updation and deletion of the details
-    of a club role based on the appropriate permissions
-    """
-    queryset = models.ClubRole.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsRepClubRole)
-    serializer_class = serializers.ClubRoleSerializer
+    filter_backends = (filters.MyClubRolesFilterBackend,)
 
 
 class ClubMembershipList(generics.ListAPIView):

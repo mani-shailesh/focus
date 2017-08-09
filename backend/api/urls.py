@@ -12,10 +12,9 @@ from . import views
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'clubs', views.ClubViewSet)
+router.register(r'clubroles', views.ClubRoleViewSet)
 
 urlpatterns = [
-    url(r'^clubroles/$', views.ClubRoleList.as_view()),
-    url(r'^clubroles/(?P<pk>[0-9]+)/$', views.ClubRoleDetail.as_view()),
     url(r'^clubmembers/$', views.ClubMembershipList.as_view()),
     url(r'^clubmembers/(?P<pk>[0-9]+)/$',
         views.ClubMembershipDetail.as_view()),
