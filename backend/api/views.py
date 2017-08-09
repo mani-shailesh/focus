@@ -58,7 +58,7 @@ class ClubRoleViewSet(viewsets.ModelViewSet):
     queryset = models.ClubRole.objects.all()
     serializer_class = serializers.ClubRoleSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsRepClubRole)
+                          permissions.IsRepOrMemReadOnlyClubRole)
     filter_backends = (filters.MyClubRolesFilterBackend,)
 
 
