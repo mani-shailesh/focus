@@ -73,9 +73,9 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.MyClubMembershipsFilterBackend,)
 
 
-class ChannelList(generics.ListAPIView):
+class ChannelViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of channels as specified by query parameters
+    Viewset to provide actions for Channels
     """
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
@@ -83,15 +83,22 @@ class ChannelList(generics.ListAPIView):
     filter_backends = (rest_filters.SearchFilter,
                        filters.MyChannelsFilterBackend)
     search_fields = ('name',)
+    
+    @detail_route(methods=['get'])
+    def subscribers(self, request, pk=None):
+        """
+        Return a list of the Users who are subscribers of this Channel
+        as response.
+        """
+        channel = self.get_object()
+        queryset = models.User.objects.filter(channel=channel)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = serializers.UserSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-
-class ChannelDetail(generics.RetrieveUpdateAPIView):
-    """
-    View to allow retrieval and updation of a channel
-    based on appropriate permissions
-    """
-    queryset = models.Channel.objects.all()
-    serializer_class = serializers.ChannelDetailSerializer
+        serializer = serializers.UserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class PostList(generics.ListCreateAPIView):

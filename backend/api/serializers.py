@@ -86,26 +86,6 @@ class ChannelSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'club')
 
 
-class ChannelDetailSerializer(serializers.ModelSerializer):
-    """
-    Detailed serializer for a Channel.
-    """
-    club = ClubSerializer(read_only=True)
-    subscribers = serializers.SerializerMethodField()
-
-    class Meta:
-        model = models.Channel
-        fields = ('id', 'name', 'description', 'club', 'subscribers')
-
-    def get_subscribers(self, obj):
-        """
-        Method to populate the subscribers of a Channel.
-        """
-        queryset = models.User.objects.filter(channel=obj)
-        serializer = UserSerializer(instance=queryset, many=True)
-        return serializer.data
-
-
 class PostSerializer(serializers.ModelSerializer):
     """
     Compact serializer for a Post.
