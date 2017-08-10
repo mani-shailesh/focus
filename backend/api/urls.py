@@ -13,11 +13,9 @@ router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'clubs', views.ClubViewSet)
 router.register(r'clubroles', views.ClubRoleViewSet)
+router.register(r'clubmembers', views.ClubMembershipViewSet)
 
 urlpatterns = [
-    url(r'^clubmembers/$', views.ClubMembershipList.as_view()),
-    url(r'^clubmembers/(?P<pk>[0-9]+)/$',
-        views.ClubMembershipDetail.as_view()),
     url(r'^channels/$', views.ChannelList.as_view()),
     url(r'^channels/(?P<pk>[0-9]+)/$', views.ChannelDetail.as_view()),
     url(r'^posts/$', views.PostList.as_view()),

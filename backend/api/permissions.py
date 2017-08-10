@@ -105,14 +105,20 @@ class IsRepOrMemReadOnlyClubRole(permissions.BasePermission):
         ).exists()
 
 
-class IsRepClubMembership(permissions.BasePermission):
+class IsRepOrMemReadOnlyClubMembership(permissions.BasePermission):
     """
-    Custom permission to only allow the club representative to access a
+    Custom permission to only allow the club representative to edit a
     clubMembership.
     """
 
     def has_object_permission(self, request, view, obj):
-        # Only allow the club representative
+        # Only allow a club member to view details
+        if request.method in permissions.SAFE_METHODS:
+            return models.ClubMembership.objects.filter(
+                user__id=request.user.id,
+                club_role__club=obj.club_role.club).exists()
+
+        # Only allow the club representative to edit
         return models.ClubMembership.objects.filter(
             user__id=request.user.id,
             club_role__club=obj.club_role.club,
