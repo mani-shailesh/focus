@@ -101,27 +101,17 @@ class ChannelViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class PostList(generics.ListCreateAPIView):
+class PostViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of posts as specified by
-    query parameters and to create posts
+    Viewset to provide actions for Posts.
     """
     queryset = models.Post.objects.all()
     serializer_class = serializers.PostSerializer
     filter_backends = (rest_filters.SearchFilter,
                        filters.MyPostsFilterBackend)
-    search_fields = ('content',)
-
-
-class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    View to allow retrieval, updation and deletion of a
-    channel based on appropriate permissions
-    """
-    queryset = models.Post.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsRepOrReadOnlyPost)
-    serializer_class = serializers.PostDetailSerializer
+    search_fields = ('content',)
 
 
 class ConversationList(generics.ListCreateAPIView):

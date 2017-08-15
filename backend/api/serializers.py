@@ -97,18 +97,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('id', 'content', 'created', 'channel')
 
 
-class PostDetailSerializer(serializers.ModelSerializer):
-    """
-    Detailed serializer for a Post.
-    """
-    created = serializers.ReadOnlyField()
-    channel = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = models.Post
-        fields = ('id', 'content', 'created', 'channel')
-
-
 class ConversationSerializer(serializers.ModelSerializer):
     """
     Serializer for a Conversation.
