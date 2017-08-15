@@ -114,15 +114,16 @@ class PostViewSet(viewsets.ModelViewSet):
     search_fields = ('content',)
 
 
-class ConversationList(generics.ListCreateAPIView):
+class ConversationViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of conversations as specified
-    by query parameters and to create conversations
+    Viewset to provide actions for Conversations.
     """
     queryset = models.Conversation.objects.all()
     serializer_class = serializers.ConversationSerializer
     filter_backends = (rest_filters.SearchFilter,
                        filters.MyConversationsFilterBackend)
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.IsClubMemberReadOnlyConversation)
     search_fields = ('content',)
 
     def perform_create(self, serializer):
@@ -131,16 +132,6 @@ class ConversationList(generics.ListCreateAPIView):
         is automatically registered as the author
         """
         serializer.save(author=self.request.user)
-
-
-class ConversationDetail(generics.RetrieveAPIView):
-    """
-    View to allow retrieval of a conversation based on appropriate permissions
-    """
-    queryset = models.Conversation.objects.all()
-    permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsClubMemberReadOnlyConversation)
-    serializer_class = serializers.ConversationDetailSerializer
 
 
 class ProjectList(generics.ListCreateAPIView):

@@ -16,11 +16,9 @@ router.register(r'clubroles', views.ClubRoleViewSet)
 router.register(r'clubmembers', views.ClubMembershipViewSet)
 router.register(r'channels', views.ChannelViewSet)
 router.register(r'posts', views.PostViewSet)
+router.register(r'conversations', views.ConversationViewSet)
 
 urlpatterns = [
-    url(r'^conversations/$', views.ConversationList.as_view()),
-    url(r'^conversations/(?P<pk>[0-9]+)/$',
-        views.ConversationDetail.as_view()),
     url(r'^projects/$', views.ProjectList.as_view()),
     url(r'^projects/(?P<pk>[0-9]+)/$', views.ProjectDetail.as_view()),
     url(r'^feedbacks/$', views.FeedbackList.as_view()),

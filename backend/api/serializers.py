@@ -109,19 +109,6 @@ class ConversationSerializer(serializers.ModelSerializer):
         fields = ('id', 'content', 'created', 'channel', 'author', 'parent')
 
 
-class ConversationDetailSerializer(serializers.ModelSerializer):
-    """
-    Detailed serializer for a Conversation.
-    """
-    author = serializers.ReadOnlyField(source='author.username')
-    created = serializers.ReadOnlyField()
-    parent = ConversationSerializer(read_only=True)
-
-    class Meta:
-        model = models.Conversation
-        fields = ('id', 'content', 'created', 'channel', 'author', 'parent')
-
-
 class FeedbackSerializer(serializers.ModelSerializer):
     """
     Serializer for a Feedback.
