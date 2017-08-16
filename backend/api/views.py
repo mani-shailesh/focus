@@ -134,25 +134,15 @@ class ConversationViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class ProjectList(generics.ListCreateAPIView):
+class ProjectViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of projects as specified by query parameters
-    and to create projects
+    Viewset to provide actions for a Project 
     """
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
-    filter_backends = (filters.MyProjectsFilterBackend,)
-
-
-class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    View to allow retrieval, updation and deletion of a project
-    based on appropriate permissions
-    """
-    queryset = models.Project.objects.all()
-    serializer_class = serializers.ProjectDetailSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsRepOrSecyAndClubMemberReadOnlyProject)
+    filter_backends = (filters.MyProjectsFilterBackend,)
 
 
 class FeedbackList(generics.ListCreateAPIView):

@@ -56,23 +56,14 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     """
-    Compact serializer for a Project.
-    """
-    class Meta:
-        model = models.Project
-        fields = ('id', 'name', 'description')
-
-
-class ProjectDetailSerializer(serializers.ModelSerializer):
-    """
-    Detailed serializer for a Project.
+    Serializer for a Project.
     """
     started = serializers.ReadOnlyField()
 
     class Meta:
         model = models.Project
-        fields = ('id', 'name', 'description', 'started',
-                  'closed', 'leader', 'members', 'clubs')
+        fields = ('id', 'name', 'description', 'started', 'closed', 'leader',
+                  'members', 'clubs')
 
 
 class ChannelSerializer(serializers.ModelSerializer):

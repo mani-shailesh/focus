@@ -17,10 +17,9 @@ router.register(r'clubmembers', views.ClubMembershipViewSet)
 router.register(r'channels', views.ChannelViewSet)
 router.register(r'posts', views.PostViewSet)
 router.register(r'conversations', views.ConversationViewSet)
+router.register(r'projects', views.ProjectViewSet)
 
 urlpatterns = [
-    url(r'^projects/$', views.ProjectList.as_view()),
-    url(r'^projects/(?P<pk>[0-9]+)/$', views.ProjectDetail.as_view()),
     url(r'^feedbacks/$', views.FeedbackList.as_view()),
     url(r'^feedbacks/(?P<pk>[0-9]+)/$', views.FeedbackDetail.as_view()),
     url(r'^feedbackreplies/$', views.FeedbackReplyCreate.as_view()),
