@@ -156,19 +156,11 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.MyClubFeedbacksFilterBackend,)
 
 
-class FeedbackReplyCreate(generics.CreateAPIView):
+class FeedbackReplyViewSet(viewsets.ModelViewSet):
     """
-    View to create feedback replies
-    """
-    serializer_class = serializers.FeedbackReplySerializer
-
-
-class FeedbackReplyDetail(generics.RetrieveAPIView):
-    """
-    View to allow retrieval of a feedback reply details based on
-    appropriate permissions
+    Viewset to provide actions for FeedbackReply
     """
     queryset = models.FeedbackReply.objects.all()
-    serializer_class = serializers.FeedbackReplyDetailSerializer
+    serializer_class = serializers.FeedbackReplySerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsSecyOrRepOrAuthorFeedbackReply)

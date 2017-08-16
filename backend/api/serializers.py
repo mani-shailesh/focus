@@ -122,15 +122,3 @@ class FeedbackReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.FeedbackReply
         fields = ('id', 'content', 'created')
-
-
-class FeedbackReplyDetailSerializer(serializers.ModelSerializer):
-    """
-    Detailed serializer for a FeedbackReply.
-    """
-    created = serializers.ReadOnlyField()
-    parent = FeedbackSerializer(read_only=True)
-
-    class Meta:
-        model = models.FeedbackReply
-        fields = ('id', 'content', 'created', 'parent')

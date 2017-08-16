@@ -224,3 +224,46 @@ class MyChannelsFilterBackend(rest_framework_filters.BaseFilterBackend):
                 subscribers__id__contains=request.user.id)
 
         return queryset
+
+
+class FeedbackReplyFilterBackend(rest_framework_filters.BaseFilterBackend):
+    """
+    Filter that allows:
+    Users to see feedback replies for clubs that they are representative of
+    Secretaries to see all the feedback replies
+    Users to see the replies to feedbacks posted by them
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+            order = int(request.query_params.get('order', -1))
+            only_my_feedbacks = bool(int(
+                request.query_params.get('only_my', 0)))
+        except:
+            raise ParseError
+
+        # Allow secretary to view feedback replies for all or selected clubs
+        if not is_secretary(request.user):
+            # Filter feedback replies of all clubs for which the user
+            # is representative or the replies to feedbacks which have
+            # been posted by the user
+            club_list = models.Club.objects.filter(
+                roles__privilege='REP',
+                roles__members__id__contains=request.user.id
+            )
+            queryset = queryset.filter(
+                Q(parent__club__in=club_list) | Q(parent__author=request.user))
+
+        if club_id != -1:
+            queryset = queryset.filter(parent__club__id=club_id)
+
+        if only_my_feedbacks:
+            queryset = queryset.filter(parent__author__id=request.user.id)
+
+        if order == -1:
+            queryset = queryset.order_by('-created')
+        else:
+            queryset = queryset.order_by('created')
+
+        return queryset
