@@ -136,7 +136,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for a Project 
+    Viewset to provide actions for Project 
     """
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
@@ -145,25 +145,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.MyProjectsFilterBackend,)
 
 
-class FeedbackList(generics.ListCreateAPIView):
+class FeedbackViewSet(viewsets.ModelViewSet):
     """
-    View to return the list of feedbacks as specified by query
-    parameters and to create feedbacks
+    Viewset to provide actions for Feedback
     """
     queryset = models.Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
-    filter_backends = (filters.MyClubFeedbacksFilterBackend,)
-
-
-class FeedbackDetail(generics.RetrieveAPIView):
-    """
-    View to allow retrieval of a feedback details based on
-    appropriate permissions
-    """
-    queryset = models.Feedback.objects.all()
-    serializer_class = serializers.FeedbackDetailSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsSecyOrRepOrAuthorFeedback)
+    filter_backends = (filters.MyClubFeedbacksFilterBackend,)
 
 
 class FeedbackReplyCreate(generics.CreateAPIView):
