@@ -12,7 +12,13 @@ class User(AbstractUser):
     """
     Wrapper for the AbstractUser to make it easy to modify User later.
     """
-    pass
+
+    def is_secretary(self):
+        """
+        Returns true if this User is `secretary`, false otherwise
+        """
+        # TODO
+        return self.is_superuser
 
 
 class Club(models.Model):
@@ -25,6 +31,25 @@ class Club(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def has_member(self, user):
+        """
+        Returns true if `user` is a member of this Club, false otherwise
+        """
+        return ClubMembership.objects.filter(
+            user__id=user.id, club_role__club=self
+        ).exists()
+
+    def has_rep(self, user):
+        """
+        Returns true if `user` is a representative of this Club, false
+        otherwise
+        """
+        return ClubMembership.objects.filter(
+            user__id=user.id,
+            club_role__club=self,
+            club_role__privilege='REP'
+        ).exists()
 
 
 class ClubMembershipRequest(models.Model):

@@ -8,7 +8,6 @@ from rest_framework.exceptions import ParseError
 from django.db.models import Q
 
 from . import models
-from .permissions import is_secretary
 
 
 class MyClubsFilterBackend(rest_framework_filters.BaseFilterBackend):
@@ -66,7 +65,7 @@ class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
             raise ParseError
 
         # Allow secretary to view feedbacks for all or selected clubs
-        if not is_secretary(request.user):
+        if not request.user.is_secretary():
             # Filter feedbacks of all clubs for which the user
             # is representative or the feedbacks which have
             # been posted by the user
@@ -109,7 +108,7 @@ class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
 
         # Allow secretary to view projects of all clubs or a selected club
         # Allow club members to only view projects of their clubs
-        if not is_secretary(request.user):
+        if not request.user.is_secretary():
             # Filter projects of all clubs for which the user is a member
             queryset = queryset.filter(
                 clubs__roles__members__id__contains=request.user.id)
@@ -244,7 +243,7 @@ class FeedbackReplyFilterBackend(rest_framework_filters.BaseFilterBackend):
             raise ParseError
 
         # Allow secretary to view feedback replies for all or selected clubs
-        if not is_secretary(request.user):
+        if not request.user.is_secretary():
             # Filter feedback replies of all clubs for which the user
             # is representative or the replies to feedbacks which have
             # been posted by the user

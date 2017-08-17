@@ -2,7 +2,6 @@
 This module contains the controllers attached to the API endpoints.
 """
 
-from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import permissions as rest_permissions
 from rest_framework import filters as rest_filters

@@ -6,11 +6,6 @@ from rest_framework import permissions
 from . import models
 
 
-def is_secretary(user_obj):
-    """A helper function to check if the `user_obj` is a secretary"""
-    return user_obj.is_superuser
-
-
 class IsRepOrReadOnlyPost(permissions.BasePermission):
     """
     Custom permission to allow everyone to read posts but only allow
@@ -23,11 +18,7 @@ class IsRepOrReadOnlyPost(permissions.BasePermission):
             return True
 
         # Write permissions are only allowed to the club representative.
-        return models.ClubMembership.objects.filter(
-            user__id=request.user.id,
-            club_role__club=obj.channel.club,
-            club_role__privilege='REP'
-        ).exists()
+        return obj.channel.club.has_rep(request.user)
 
 
 class IsClubMemberReadOnlyConversation(permissions.BasePermission):
@@ -39,10 +30,7 @@ class IsClubMemberReadOnlyConversation(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to only club members
         if request.method in permissions.SAFE_METHODS:
-            return models.ClubMembership.objects.filter(
-                user__id=request.user.id,
-                club_role__club=obj.channel.club
-            ).exists()
+            return obj.channel.club.has_member(request.user)
 
         # Write permissions are denied to everyone.
         return False
@@ -75,13 +63,10 @@ class IsSecyOrRepOrReadOnlyClub(permissions.BasePermission):
             return True
         # Only allow a secretary to delete
         if request.method == 'DELETE':
-            return is_secretary(request.user)
+            return request.user.is_secretary()
         # Only allow a secretary or club representative to update
-        return is_secretary(request.user) or \
-            models.ClubMembership.objects.filter(
-                user__id=request.user.id,
-                club_role__club=obj,
-                club_role__privilege='REP').exists()
+        return request.user.is_secretary() or \
+            obj.has_rep(request.user)
 
 
 class IsRepOrMemReadOnlyClubRole(permissions.BasePermission):
@@ -92,17 +77,10 @@ class IsRepOrMemReadOnlyClubRole(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
-            return models.ClubMembership.objects.filter(
-                user__id=request.user.id,
-                club_role__club=obj.club
-            ).exists()
+            return obj.club.has_member(request.user)
 
         # Only allow the club representative to edit
-        return models.ClubMembership.objects.filter(
-            user__id=request.user.id,
-            club_role__club=obj.club,
-            club_role__privilege='REP'
-        ).exists()
+        return obj.club.has_rep(request.user)
 
 
 class IsRepOrMemReadOnlyClubMembership(permissions.BasePermission):
@@ -114,15 +92,10 @@ class IsRepOrMemReadOnlyClubMembership(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Only allow a club member to view details
         if request.method in permissions.SAFE_METHODS:
-            return models.ClubMembership.objects.filter(
-                user__id=request.user.id,
-                club_role__club=obj.club_role.club).exists()
+            return obj.club_role.club.has_member(request.user)
 
         # Only allow the club representative to edit
-        return models.ClubMembership.objects.filter(
-            user__id=request.user.id,
-            club_role__club=obj.club_role.club,
-            club_role__privilege='REP').exists()
+        return obj.club_role.club.has_rep(request.user)
 
 
 class IsSecyOrRepOrAuthorFeedback(permissions.BasePermission):
@@ -134,11 +107,8 @@ class IsSecyOrRepOrAuthorFeedback(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return obj.author == request.user \
-                    or is_secretary(request.user) \
-                    or models.ClubMembership.objects.filter(
-                        user__id=request.user.id,
-                        club_role__club=obj.club,
-                        club_role__privilege='REP').exists()
+                    or request.user.is_secretary() \
+                    or obj.club.has_rep(request.user)
         # Do not allow write permissions to anyone
         return False
 
@@ -152,11 +122,8 @@ class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return obj.parent.author == request.user \
-                    or is_secretary(request.user) \
-                    or models.ClubMembership.objects.filter(
-                        user__id=request.user.id,
-                        club_role__club=obj.parent.club,
-                        club_role__privilege='REP').exists()
+                    or request.user.is_secretary() \
+                    or obj.parent.club.has_rep(request.user)
         # Do not allow write permissions to anyone
         return False
 
@@ -170,7 +137,7 @@ class IsRepOrSecyAndClubMemberReadOnlyProject(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
-            return is_secretary(request.user) \
+            return request.user.is_secretary() \
                     or models.ClubMembership.objects.filter(
                         user__id=request.user.id,
                         club_role__club__in=obj.clubs.all()
