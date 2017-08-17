@@ -7,6 +7,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from . import constants
+
 
 class User(AbstractUser):
     """
@@ -48,7 +50,7 @@ class Club(models.Model):
         return ClubMembership.objects.filter(
             user__id=user.id,
             club_role__club=self,
-            club_role__privilege='REP'
+            club_role__privilege=constants.PRIVILEGE_REP
         ).exists()
 
 
@@ -79,8 +81,8 @@ class ClubRole(models.Model):
     Model to represent a specific role for members in a given Club
     """
     PRIVILEGE_CHOICES = (
-        ('REP', 'Representative'),
-        ('MEM', 'Member')
+        (constants.PRIVILEGE_REP, 'Representative'),
+        (constants.PRIVILEGE_MEM, 'Member')
     )
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()

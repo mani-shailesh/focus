@@ -4,6 +4,7 @@ This modules contains classes to define serialization of Models.
 
 from rest_framework import serializers
 from . import models
+from . import constants
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,10 +26,22 @@ class ClubSerializer(serializers.ModelSerializer):
     Compact serializer for Club.
     """
     id = serializers.ReadOnlyField()
+    privilege = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Club
-        fields = ('id', 'name', 'description')
+        fields = ('id', 'name', 'description', 'privilege')
+
+    def get_privilege(self, obj):
+        """
+        Method to get the privilege of current user for this Club.
+        """
+        user = self.context['request'].user
+        if obj.has_rep(user):
+            return constants.PRIVILEGE_REP 
+        if obj.has_member(user):
+            return constants.PRIVILEGE_MEM
+        return None
 
 
 class ClubRoleSerializer(serializers.ModelSerializer):
