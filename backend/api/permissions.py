@@ -124,7 +124,8 @@ class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
             return obj.parent.author == request.user \
                     or request.user.is_secretary() \
                     or obj.parent.club.has_rep(request.user)
-        # Do not allow write permissions to anyone
+
+        # Do not allow anyone to modify or delete
         return False
 
 

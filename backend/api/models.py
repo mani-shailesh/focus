@@ -250,6 +250,21 @@ class Feedback(models.Model):
     def __unicode__(self):
         return 'Feedback for {} by {}'.format(self.club, self.author)
 
+    def is_replied(self):
+        """
+        Returns `True` if this Feedback has been replied, `False` otherwise
+        """
+        return FeedbackReply.objects.filter(
+            parent=self,
+        ).exists()
+
+    def get_reply(self):
+        """
+        Returns the FeedbackReply object for this Feedback if it has been
+        replied to, raises FeedbackReply.DoesNotExist otherwise.
+        """
+        return FeedbackReply.objects.get(parent=self)
+
 
 class FeedbackReply(models.Model):
     """

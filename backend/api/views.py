@@ -5,6 +5,7 @@ This module contains the controllers attached to the API endpoints.
 from rest_framework import viewsets
 from rest_framework import permissions as rest_permissions
 from rest_framework import filters as rest_filters
+from rest_framework import exceptions as rest_exceptions
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
@@ -162,7 +163,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for Project 
+    Viewset to provide actions for Project
     """
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
@@ -190,3 +191,11 @@ class FeedbackReplyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.FeedbackReplySerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.IsSecyOrRepOrAuthorFeedbackReply)
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.FeedbackReplySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        feedback = models.Feedback.objects.get(id=serializer.data['parent'])
+        if not feedback.club.has_rep(request.user):
+            raise rest_exceptions.PermissionDenied()
+        return super(FeedbackReplyViewSet, self).create(request, args, kwargs)

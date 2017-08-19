@@ -144,4 +144,4 @@ class FeedbackReplySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.FeedbackReply
-        fields = ('id', 'content', 'created')
+        fields = ('id', 'content', 'created', 'parent')
