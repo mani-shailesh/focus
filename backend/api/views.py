@@ -82,7 +82,20 @@ class ChannelViewSet(viewsets.ModelViewSet):
     filter_backends = (rest_filters.SearchFilter,
                        filters.MyChannelsFilterBackend)
     search_fields = ('name',)
-    
+
+    @detail_route(methods=['get'])
+    def subscribe(self, request, pk=None):
+        """
+        Subscribe the logged in user to this Channel.
+        """
+        channel = self.get_object()
+        channel.subscribe(request.user)
+        serializer = serializers.ChannelSerializer(
+            channel,
+            context={'request': request}
+        )
+        return Response(serializer.data)
+
     @detail_route(methods=['get'])
     def subscribers(self, request, pk=None):
         """
@@ -97,6 +110,20 @@ class ChannelViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
 
         serializer = serializers.UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def unsubscribe(self, request, pk=None):
+        """
+        Unsubscribe the logged in user from this Channel.
+        Safe to use even if the user is not subscribed.
+        """
+        channel = self.get_object()
+        channel.unsubscribe(request.user)
+        serializer = serializers.ChannelSerializer(
+            channel,
+            context={'request': request}
+        )
         return Response(serializer.data)
 
 

@@ -174,6 +174,26 @@ class Channel(models.Model):
             channel=self,
         ).exists()
 
+    def subscribe(self, user):
+        """
+        Subscribe `user` to this Channel.
+        Safe to use even if the `user` has already subscribed.
+        """
+        ChannelSubscription.objects.get_or_create(
+            user=user,
+            channel=self,
+        )
+
+    def unsubscribe(self, user):
+        """
+        Unsubscribe `user` from this Channel.
+        Safe to use even if the `user` has not subscribed.
+        """
+        ChannelSubscription.objects.filter(
+            user=user,
+            channel=self,
+        ).delete()
+
 
 class ChannelSubscription(models.Model):
     """
