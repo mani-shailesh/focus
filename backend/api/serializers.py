@@ -13,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
     """
     date_joined = serializers.ReadOnlyField()
     username = serializers.ReadOnlyField()
-    id = serializers.ReadOnlyField()
 
     class Meta:
         model = models.User
@@ -23,9 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ClubSerializer(serializers.ModelSerializer):
     """
-    Compact serializer for Club.
+    Serializer for Club.
     """
-    id = serializers.ReadOnlyField()
     privilege = serializers.SerializerMethodField()
 
     class Meta:
@@ -38,10 +36,24 @@ class ClubSerializer(serializers.ModelSerializer):
         """
         user = self.context['request'].user
         if obj.has_rep(user):
-            return constants.PRIVILEGE_REP 
+            return constants.PRIVILEGE_REP
         if obj.has_member(user):
             return constants.PRIVILEGE_MEM
         return None
+
+
+class ClubMembershipRequestSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a ClubMembershipRequest.
+    """
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    initiated = serializers.ReadOnlyField()
+    closed = serializers.ReadOnlyField()
+    status = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.ClubMembershipRequest
+        fields = ('id', 'user', 'club', 'initiated', 'status', 'closed')
 
 
 class ClubRoleSerializer(serializers.ModelSerializer):
@@ -83,7 +95,7 @@ class ChannelSerializer(serializers.ModelSerializer):
     """
     Serializer for a Channel.
     """
-    club = serializers.PrimaryKeyRelatedField(read_only=True) 
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
     subscribed = serializers.SerializerMethodField()
 
     class Meta:

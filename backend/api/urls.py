@@ -11,6 +11,7 @@ from . import views
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'clubs', views.ClubViewSet)
+router.register(r'requests', views.ClubMembershipRequestViewSet)
 router.register(r'clubroles', views.ClubRoleViewSet)
 router.register(r'clubmembers', views.ClubMembershipViewSet)
 router.register(r'channels', views.ChannelViewSet)

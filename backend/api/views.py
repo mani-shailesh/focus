@@ -51,6 +51,21 @@ class ClubViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to provide actions for a ClubMembershipRequest
+    """
+    queryset = models.ClubMembershipRequest.objects.all()
+    serializer_class = serializers.ClubMembershipRequestSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        """
+        Override create to make sure that the current user
+        is only able to make requests for herself.
+        """
+        serializer.save(user=self.request.user)
+
 class ClubRoleViewSet(viewsets.ModelViewSet):
     """
     Viewset to provide actions for a ClubRole
