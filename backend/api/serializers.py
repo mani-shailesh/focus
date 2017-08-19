@@ -83,11 +83,21 @@ class ChannelSerializer(serializers.ModelSerializer):
     """
     Serializer for a Channel.
     """
-    club = ClubSerializer(read_only=True)
+    club = serializers.PrimaryKeyRelatedField(read_only=True) 
+    subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Channel
-        fields = ('id', 'name', 'description', 'club')
+        fields = ('id', 'name', 'subscribed', 'description', 'club')
+
+    def get_subscribed(self, obj):
+        """
+        Method to get if the current user has subscribed to this Channel.
+        """
+        user = self.context['request'].user
+        if obj.has_subscriber(user):
+            return True
+        return False
 
 
 class PostSerializer(serializers.ModelSerializer):

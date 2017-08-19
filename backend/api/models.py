@@ -164,6 +164,16 @@ class Channel(models.Model):
     def __unicode__(self):
         return '{} : {}'.format(self.name, self.club)
 
+    def has_subscriber(self, user):
+        """
+        Returns true if `user` is a subscriber of this Channel, false
+        otherwise.
+        """
+        return ChannelSubscription.objects.filter(
+            user=user,
+            channel=self,
+        ).exists()
+
 
 class ChannelSubscription(models.Model):
     """
