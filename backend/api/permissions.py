@@ -149,3 +149,23 @@ class IsRepOrSecyAndClubMemberReadOnlyProject(permissions.BasePermission):
             club_role__club__in=obj.clubs.all(),
             club_role__privilege='REP'
         ).exists()
+
+
+class ClubMembershipRequestPermission(permissions.BasePermission):
+    """
+    Custom permission for ClubMembershipRequest that only allows:
+        1. Users to see their request
+        2. Club representatives to see requests for their club
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method not in permissions.SAFE_METHODS:
+            # Do not allow anyone to modify/delete
+            return False
+
+        # Only allow access to the requester or the representative of the club
+        # for which the request is made
+        if obj.club.has_rep(request.user) or \
+           obj.user == request.user:
+            return True
+        return False

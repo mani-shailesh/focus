@@ -59,16 +59,17 @@ class ClubMembershipRequest(models.Model):
     Model to represent a request made by a User for membership in a Club
     """
     STATUS_CHOICES = (
-        ('PD', 'Pending'),
-        ('AC', 'Accepted'),
-        ('RE', 'Rejected'),
-        ('CN', 'Cancelled'),
+        (constants.REQUEST_STATUS_PENDING, 'Pending'),
+        (constants.REQUEST_STATUS_ACCEPTED, 'Accepted'),
+        (constants.REQUEST_STATUS_REJECTED, 'Rejected'),
+        (constants.REQUEST_STATUS_CANCELLED, 'Cancelled'),
     )
     user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     initiated = models.DateTimeField(auto_now_add=True, blank=False)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES,
-                              blank=False, default='PD')
+                              blank=False,
+                              default=constants.REQUEST_STATUS_PENDING)
     closed = models.DateTimeField(default=None, blank=True, null=True)
 
     def __unicode__(self):
@@ -90,7 +91,7 @@ class ClubRole(models.Model):
                              related_name='roles')
     members = models.ManyToManyField('User', through='ClubMembership')
     privilege = models.CharField(max_length=3, choices=PRIVILEGE_CHOICES,
-                                 blank=False, default='MEM')
+                                 blank=False, default=constants.PRIVILEGE_MEM)
 
     def __unicode__(self):
         return '{} in {}'.format(self.name, self.club)

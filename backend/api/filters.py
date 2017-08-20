@@ -7,12 +7,12 @@ from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import ParseError
 from django.db.models import Q
 
-from . import models
+from . import models, constants
 
 
 class MyClubsFilterBackend(rest_framework_filters.BaseFilterBackend):
     """
-    Filter that only allows users to see their own objects.
+    Filter that allows users to see only their own objects, if requested.
     """
 
     def filter_queryset(self, request, queryset, view):
@@ -20,6 +20,61 @@ class MyClubsFilterBackend(rest_framework_filters.BaseFilterBackend):
         if only_my_clubs:
             queryset = queryset.filter(
                 roles__members__id__contains=request.user.id)
+        return queryset
+
+
+class ClubMembershipRequestFilter(rest_framework_filters.BaseFilterBackend):
+    """
+    Filter that only allows a user to see her own requests or the requests for
+    a club that she is a representative of. It also allows further filtering
+    based on following parameters in request:
+        1. club_id: Only show requests for provided club id
+        2. only_my: Only show requests made by current user
+        3. pending: Show all if unset, only pending if true, only not pending
+        otherwise
+        4. order:   Order most recently initiated first if set to -1 or unset,
+        otherwise reverse the order
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+            order = int(request.query_params.get('order', -1))
+            only_my_requests = bool(int(
+                request.query_params.get('only_my', 0)))
+            pending = int(request.query_params.get('pending', -1))
+        except:
+            raise ParseError
+
+        # Get the list of all clubs that user is a representative of
+        club_list = models.Club.objects.filter(
+            roles__privilege=constants.PRIVILEGE_REP,
+            roles__members__id__contains=request.user.id
+        )
+        queryset = queryset.filter(
+            Q(club__in=club_list) | Q(user=request.user)
+        )
+
+        if pending != -1:
+            if pending:
+                queryset = queryset.filter(
+                    status=constants.REQUEST_STATUS_PENDING
+                )
+            else:
+                queryset = queryset.exclude(
+                    status=constants.REQUEST_STATUS_PENDING
+                )
+
+        if club_id != -1:
+            queryset = queryset.filter(club__id=club_id)
+
+        if only_my_requests:
+            queryset = queryset.filter(user=request.user)
+
+        if order == -1:
+            queryset = queryset.order_by('-initiated')
+        else:
+            queryset = queryset.order_by('initiated')
         return queryset
 
 
@@ -50,9 +105,9 @@ class MyClubMembershipsFilterBackend(rest_framework_filters.BaseFilterBackend):
 class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
-    Users to see feedbacks for clubs that they are representative of
-    Secretaries to see all the feedbacks
-    Users to see the feedbacks posted by them
+        1. Users to see feedbacks for clubs that they are representative of
+        2. Secretaries to see all the feedbacks
+        3. Users to see the feedbacks posted by them
     """
 
     def filter_queryset(self, request, queryset, view):

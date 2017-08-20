@@ -57,7 +57,9 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
     """
     queryset = models.ClubMembershipRequest.objects.all()
     serializer_class = serializers.ClubMembershipRequestSerializer
-    permission_classes = (rest_permissions.IsAuthenticated,)
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.ClubMembershipRequestPermission,)
+    filter_backends = (filters.ClubMembershipRequestFilter,)
 
     def perform_create(self, serializer):
         """
@@ -65,6 +67,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         is only able to make requests for herself.
         """
         serializer.save(user=self.request.user)
+
 
 class ClubRoleViewSet(viewsets.ModelViewSet):
     """
