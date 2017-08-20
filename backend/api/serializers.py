@@ -49,11 +49,17 @@ class ClubMembershipRequestSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     initiated = serializers.ReadOnlyField()
     closed = serializers.ReadOnlyField()
-    status = serializers.ReadOnlyField()
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = models.ClubMembershipRequest
         fields = ('id', 'user', 'club', 'initiated', 'status', 'closed')
+
+    def get_status(self, obj):
+        """
+        Method to get human readable value for the status of this request.
+        """
+        return obj.get_status_display()
 
 
 class ClubRoleSerializer(serializers.ModelSerializer):

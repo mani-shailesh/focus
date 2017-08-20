@@ -3,11 +3,12 @@ Defines the models used in the app.
 """
 
 from __future__ import unicode_literals
+from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-from . import constants
+from . import constants, exceptions
 
 
 class User(AbstractUser):
@@ -74,7 +75,58 @@ class ClubMembershipRequest(models.Model):
 
     def __unicode__(self):
         return '{} requested membership in {} on {} : {}'.format(
-            self.user, self.club, self.initiated, self.status)
+            self.user, self.club, self.initiated, self.get_status_display())
+
+    def is_pending(self):
+        """
+        Returns `True` if this request is still pending, `False` otherwise.
+        """
+        return self.status == constants.REQUEST_STATUS_PENDING
+
+    def accept(self):
+        """
+        Marks the status of this request as 'Accepted' if it is pending, throws
+        ActionNotAllowed Exception otherwise.
+        """
+        if not self.is_pending():
+            raise exceptions.ActionNotAvailable(
+                action='accept',
+                detail='The request is already marked as ' +
+                self.get_status_display() + '. Can not be accepted!'
+            )
+        self.status = constants.REQUEST_STATUS_ACCEPTED
+        self.closed = datetime.now()
+        self.save()
+
+    def reject(self):
+        """
+        Marks the status of this request as 'Rejected' if it is pending, throws
+        ActionNotAllowed Exception otherwise.
+        """
+        if not self.is_pending():
+            raise exceptions.ActionNotAvailable(
+                action='reject',
+                detail='The request is already marked as ' +
+                self.get_status_display() + '. Can not be rejected!'
+            )
+        self.status = constants.REQUEST_STATUS_REJECTED
+        self.closed = datetime.now()
+        self.save()
+
+    def cancel(self):
+        """
+        Marks the status of this request as 'Cancelled' if it is pending,
+        throws ActionNotAllowed Exception otherwise.
+        """
+        if not self.is_pending():
+            raise exceptions.ActionNotAvailable(
+                action='cancel',
+                detail='The request is already marked as ' +
+                self.get_status_display() + '. Can not be cancelled!'
+            )
+        self.status = constants.REQUEST_STATUS_CANCELLED
+        self.closed = datetime.now()
+        self.save()
 
 
 class ClubRole(models.Model):

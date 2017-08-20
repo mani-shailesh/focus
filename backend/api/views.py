@@ -68,6 +68,44 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         """
         serializer.save(user=self.request.user)
 
+    @detail_route(methods=['get'])
+    def accept(self, request, pk=None):
+        """
+        Accept the request if the current user is representative of the club
+        for which request is made and if the request is still pending.
+        """
+        membership_request = self.get_object()
+        if not membership_request.club.has_rep(request.user):
+            raise rest_exceptions.PermissionDenied()
+        membership_request.accept()
+        serializer = self.serializer_class(membership_request)
+        return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def reject(self, request, pk=None):
+        """
+        Reject the request if the current user is representative of the club
+        for which request is made and if the request is still pending.
+        """
+        membership_request = self.get_object()
+        if not membership_request.club.has_rep(request.user):
+            raise rest_exceptions.PermissionDenied()
+        membership_request.reject()
+        serializer = self.serializer_class(membership_request)
+        return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def cancel(self, request, pk=None):
+        """
+        Accept the request if the current user has initiated this request and
+        the request is still pending.
+        """
+        membership_request = self.get_object()
+        if not membership_request.user == request.user:
+            raise rest_exceptions.PermissionDenied()
+        membership_request.cancel()
+        serializer = self.serializer_class(membership_request)
+        return Response(serializer.data)
 
 class ClubRoleViewSet(viewsets.ModelViewSet):
     """
