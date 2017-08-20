@@ -75,14 +75,15 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
     """
     Serializer to represent membership of a User in a Club through a ClubRole.
     """
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=models.User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    username = serializers.ReadOnlyField(source='user.username')
     club_role = serializers.PrimaryKeyRelatedField(
         queryset=models.ClubRole.objects.all())
+    privilege = serializers.ReadOnlyField(source='club_role.privilege')
 
     class Meta:
         model = models.ClubMembership
-        fields = ('id', 'user', 'club_role', 'joined')
+        fields = ('id', 'user', 'username', 'club_role', 'joined', 'privilege')
 
 
 class ProjectSerializer(serializers.ModelSerializer):

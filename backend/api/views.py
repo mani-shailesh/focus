@@ -41,13 +41,14 @@ class ClubViewSet(viewsets.ModelViewSet):
         Return a list of the Users who are members of this club as response.
         """
         club = self.get_object()
-        queryset = models.User.objects.filter(clubrole__club=club).distinct()
+        queryset = models.ClubMembership.objects.filter(
+            club_role__club=club).distinct()
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = serializers.UserSerializer(page, many=True)
+            serializer = serializers.ClubMembershipSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = serializers.UserSerializer(queryset, many=True)
+        serializer = serializers.ClubMembershipSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
