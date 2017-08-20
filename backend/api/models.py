@@ -5,7 +5,7 @@ Defines the models used in the app.
 from __future__ import unicode_literals
 from datetime import datetime
 
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import AbstractUser
 
 from . import constants, exceptions
@@ -34,6 +34,20 @@ class Club(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def add_member(self, user, privilege=constants.PRIVILEGE_MEM):
+        """
+        Adds `user` as a member of this Club.
+        """
+        # TODO: Make sure that this call always succeeds.
+        club_role = ClubRole.objects.get(
+            club=self,
+            privilege=privilege,
+        )
+        ClubMembership.objects.get_or_create(
+            club_role=club_role,
+            user=user,
+        )
 
     def has_member(self, user):
         """
@@ -94,9 +108,16 @@ class ClubMembershipRequest(models.Model):
                 detail='The request is already marked as ' +
                 self.get_status_display() + '. Can not be accepted!'
             )
-        self.status = constants.REQUEST_STATUS_ACCEPTED
-        self.closed = datetime.now()
-        self.save()
+
+        with transaction.atomic():
+            """
+            Make sure that the user becomes a member if the request is Accepted
+            otherwise accepting request fails as well.
+            """
+            self.status = constants.REQUEST_STATUS_ACCEPTED
+            self.closed = datetime.now()
+            self.club.add_member(self.user)
+            self.save()
 
     def reject(self):
         """
