@@ -125,7 +125,7 @@ class FeedbackFilter(rest_framework_filters.BaseFilterBackend):
             # is representative or the feedbacks which have
             # been posted by the user
             club_list = models.Club.objects.filter(
-                roles__privilege='REP',
+                roles__privilege=constants.PRIVILEGE_REP,
                 roles__members__id__contains=request.user.id
             )
             queryset = queryset.filter(
@@ -282,10 +282,10 @@ class ChannelFilter(rest_framework_filters.BaseFilterBackend):
 
 class FeedbackReplyFilter(rest_framework_filters.BaseFilterBackend):
     """
-    Filter that allows:
-    Users to see feedback replies for clubs that they are representative of
-    Secretaries to see all the feedback replies
-    Users to see the replies to feedbacks posted by them
+    Filter that only allows:
+    1. Users to see feedback replies for clubs that they are representative of
+    2. Secretaries to see all the feedback replies
+    3. Users to see the replies to feedbacks posted by them
     """
 
     def filter_queryset(self, request, queryset, view):
@@ -303,7 +303,7 @@ class FeedbackReplyFilter(rest_framework_filters.BaseFilterBackend):
             # is representative or the replies to feedbacks which have
             # been posted by the user
             club_list = models.Club.objects.filter(
-                roles__privilege='REP',
+                roles__privilege=constants.PRIVILEGE_REP,
                 roles__members__id__contains=request.user.id
             )
             queryset = queryset.filter(

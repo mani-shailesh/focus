@@ -209,6 +209,7 @@ class FeedbackReplyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.FeedbackReplySerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.FeedbackReplyPermission)
+    filter_backends = (filters.FeedbackReplyFilter,)
 
     def create(self, request, *args, **kwargs):
         serializer = serializers.FeedbackReplySerializer(data=request.data)
