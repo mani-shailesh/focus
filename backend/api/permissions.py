@@ -3,10 +3,10 @@ This module declares the custom Permission classes.
 """
 
 from rest_framework import permissions
-from . import models
+from . import models, constants
 
 
-class IsRepOrReadOnlyPost(permissions.BasePermission):
+class PostPermission(permissions.BasePermission):
     """
     Custom permission to allow everyone to read posts but only allow
     representative of a club to update or delete it.
@@ -21,7 +21,7 @@ class IsRepOrReadOnlyPost(permissions.BasePermission):
         return obj.channel.club.has_rep(request.user)
 
 
-class IsClubMemberReadOnlyConversation(permissions.BasePermission):
+class ConversationPermission(permissions.BasePermission):
     """
     Custom permission to allow only club members to read conversations and do
     not allow anyone to write.
@@ -36,7 +36,7 @@ class IsClubMemberReadOnlyConversation(permissions.BasePermission):
         return False
 
 
-class IsSelfOrReadOnlyUser(permissions.BasePermission):
+class UserPermission(permissions.BasePermission):
     """
     Custom permission to only allow a user to update his/her details but see
     details of everyone.
@@ -51,7 +51,7 @@ class IsSelfOrReadOnlyUser(permissions.BasePermission):
         return obj == request.user
 
 
-class IsSecyOrRepOrReadOnlyClub(permissions.BasePermission):
+class ClubPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club representative to
     write but allow everyone to read the details of a club.
@@ -69,7 +69,7 @@ class IsSecyOrRepOrReadOnlyClub(permissions.BasePermission):
             obj.has_rep(request.user)
 
 
-class IsRepOrMemReadOnlyClubRole(permissions.BasePermission):
+class ClubRolePermission(permissions.BasePermission):
     """
     Custom permission to only allow the club representative to edit a clubRole
     and only allow club members to view a clubRole.
@@ -83,7 +83,7 @@ class IsRepOrMemReadOnlyClubRole(permissions.BasePermission):
         return obj.club.has_rep(request.user)
 
 
-class IsRepOrMemReadOnlyClubMembership(permissions.BasePermission):
+class ClubMembershipPermission(permissions.BasePermission):
     """
     Custom permission to only allow the club representative to edit a
     clubMembership.
@@ -98,7 +98,7 @@ class IsRepOrMemReadOnlyClubMembership(permissions.BasePermission):
         return obj.club_role.club.has_rep(request.user)
 
 
-class IsSecyOrRepOrAuthorFeedback(permissions.BasePermission):
+class FeedbackPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club representative or
     author to read the details of a feedback.
@@ -113,7 +113,7 @@ class IsSecyOrRepOrAuthorFeedback(permissions.BasePermission):
         return False
 
 
-class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
+class FeedbackReplyPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club representative
     or author to read the details of a feedbackReply.
@@ -129,7 +129,7 @@ class IsSecyOrRepOrAuthorFeedbackReply(permissions.BasePermission):
         return False
 
 
-class IsRepOrSecyAndClubMemberReadOnlyProject(permissions.BasePermission):
+class ProjectPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club members to read
     the details of a project. Also, to allow a club representative to update
@@ -147,7 +147,7 @@ class IsRepOrSecyAndClubMemberReadOnlyProject(permissions.BasePermission):
         return models.ClubMembership.objects.filter(
             user__id=request.user.id,
             club_role__club__in=obj.clubs.all(),
-            club_role__privilege='REP'
+            club_role__privilege=constants.PRIVILEGE_REP
         ).exists()
 
 

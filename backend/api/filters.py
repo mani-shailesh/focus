@@ -10,7 +10,7 @@ from django.db.models import Q
 from . import models, constants
 
 
-class MyClubsFilterBackend(rest_framework_filters.BaseFilterBackend):
+class ClubFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows users to see only their own objects, if requested.
     """
@@ -78,7 +78,7 @@ class ClubMembershipRequestFilter(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyClubRolesFilterBackend(rest_framework_filters.BaseFilterBackend):
+class ClubRoleFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that only allows club members to see club roles of their clubs.
     """
@@ -90,7 +90,7 @@ class MyClubRolesFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyClubMembershipsFilterBackend(rest_framework_filters.BaseFilterBackend):
+class ClubMembershipFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that only allows club members to see club roles of their clubs.
     """
@@ -102,7 +102,7 @@ class MyClubMembershipsFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
+class FeedbackFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
         1. Users to see feedbacks for clubs that they are representative of
@@ -145,7 +145,7 @@ class MyClubFeedbacksFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
+class ProjectFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
     Users to see projects of clubs that they are member of
@@ -177,7 +177,7 @@ class MyProjectsFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyPostsFilterBackend(rest_framework_filters.BaseFilterBackend):
+class PostFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
     1. Users to see posts by channels that they have subscribed
@@ -209,7 +209,7 @@ class MyPostsFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyConversationsFilterBackend(rest_framework_filters.BaseFilterBackend):
+class ConversationFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that:
     1. Restricts users to only see conversations on channels of a club that
@@ -255,7 +255,7 @@ class MyConversationsFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class MyChannelsFilterBackend(rest_framework_filters.BaseFilterBackend):
+class ChannelFilter(rest_framework_filters.BaseFilterBackend):
     """
     Class to filter out the channels as per the request.
     """
@@ -280,7 +280,7 @@ class MyChannelsFilterBackend(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
-class FeedbackReplyFilterBackend(rest_framework_filters.BaseFilterBackend):
+class FeedbackReplyFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
     Users to see feedback replies for clubs that they are representative of

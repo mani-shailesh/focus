@@ -19,7 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSelfOrReadOnlyUser)
+                          permissions.UserPermission)
 
 
 class ClubViewSet(viewsets.ModelViewSet):
@@ -30,9 +30,9 @@ class ClubViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ClubSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           rest_permissions.DjangoModelPermissions,
-                          permissions.IsSecyOrRepOrReadOnlyClub)
+                          permissions.ClubPermission)
     filter_backends = (rest_filters.SearchFilter,
-                       filters.MyClubsFilterBackend)
+                       filters.ClubFilter)
     search_fields = ('name',)
 
     @detail_route(methods=['get'])
@@ -76,8 +76,8 @@ class ClubRoleViewSet(viewsets.ModelViewSet):
     queryset = models.ClubRole.objects.all()
     serializer_class = serializers.ClubRoleSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsRepOrMemReadOnlyClubRole)
-    filter_backends = (filters.MyClubRolesFilterBackend,)
+                          permissions.ClubRolePermission)
+    filter_backends = (filters.ClubRoleFilter,)
 
 
 class ClubMembershipViewSet(viewsets.ModelViewSet):
@@ -87,8 +87,8 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
     queryset = models.ClubMembership.objects.all()
     serializer_class = serializers.ClubMembershipSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsRepOrMemReadOnlyClubMembership)
-    filter_backends = (filters.MyClubMembershipsFilterBackend,)
+                          permissions.ClubMembershipPermission)
+    filter_backends = (filters.ClubMembershipFilter,)
 
 
 class ChannelViewSet(viewsets.ModelViewSet):
@@ -99,7 +99,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ChannelSerializer
     permission_classes = (rest_permissions.IsAuthenticated,)
     filter_backends = (rest_filters.SearchFilter,
-                       filters.MyChannelsFilterBackend)
+                       filters.ChannelFilter)
     search_fields = ('name',)
 
     @detail_route(methods=['get'])
@@ -153,9 +153,9 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = models.Post.objects.all()
     serializer_class = serializers.PostSerializer
     filter_backends = (rest_filters.SearchFilter,
-                       filters.MyPostsFilterBackend)
+                       filters.PostFilter)
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsRepOrReadOnlyPost)
+                          permissions.PostPermission)
     search_fields = ('content',)
 
 
@@ -166,9 +166,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     queryset = models.Conversation.objects.all()
     serializer_class = serializers.ConversationSerializer
     filter_backends = (rest_filters.SearchFilter,
-                       filters.MyConversationsFilterBackend)
+                       filters.ConversationFilter)
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsClubMemberReadOnlyConversation)
+                          permissions.ConversationPermission)
     search_fields = ('content',)
 
     def perform_create(self, serializer):
@@ -186,8 +186,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsRepOrSecyAndClubMemberReadOnlyProject)
-    filter_backends = (filters.MyProjectsFilterBackend,)
+                          permissions.ProjectPermission)
+    filter_backends = (filters.ProjectFilter,)
 
 
 class FeedbackViewSet(viewsets.ModelViewSet):
@@ -197,8 +197,8 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = models.Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSecyOrRepOrAuthorFeedback)
-    filter_backends = (filters.MyClubFeedbacksFilterBackend,)
+                          permissions.FeedbackPermission)
+    filter_backends = (filters.FeedbackFilter,)
 
 
 class FeedbackReplyViewSet(viewsets.ModelViewSet):
@@ -208,7 +208,7 @@ class FeedbackReplyViewSet(viewsets.ModelViewSet):
     queryset = models.FeedbackReply.objects.all()
     serializer_class = serializers.FeedbackReplySerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.IsSecyOrRepOrAuthorFeedbackReply)
+                          permissions.FeedbackReplyPermission)
 
     def create(self, request, *args, **kwargs):
         serializer = serializers.FeedbackReplySerializer(data=request.data)
