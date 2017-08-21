@@ -108,10 +108,30 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
     Viewset to provide actions for ClubMembership
     """
     queryset = models.ClubMembership.objects.all()
-    serializer_class = serializers.ClubMembershipSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.ClubMembershipPermission)
     filter_backends = (filters.ClubMembershipFilter,)
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve' or self.action == 'update':
+            return serializers.ClubMembershipEditSerializer
+        return serializers.ClubMembershipSerializer
+
+    def update(self, request, *args, **kwargs):
+        """
+        Override update to make sure that only valid clubRole is assigned after
+        updation.
+        """
+        club_membership = self.get_object()
+        serializer = self.get_serializer(club_membership,
+                                         data=request.data,
+                                         partial=True)
+        serializer.is_valid(raise_exception=True)
+        if not club_membership.club_role.club \
+           .has_role(serializer.validated_data['club_role']):
+            raise rest_exceptions.ValidationError(
+                'Invalid Club Role ID for this Club!')
+        return super(ClubMembershipViewSet, self).update(request, args, kwargs)
 
 
 class ChannelViewSet(viewsets.ModelViewSet):
@@ -237,7 +257,7 @@ class FeedbackReplyViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = serializers.FeedbackReplySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        feedback = models.Feedback.objects.get(id=serializer.data['parent'])
+        feedback = serializer.validated_data['parent']
         if not feedback.club.has_rep(request.user):
             raise rest_exceptions.PermissionDenied()
         return super(FeedbackReplyViewSet, self).create(request, args, kwargs)

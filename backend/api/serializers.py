@@ -93,6 +93,17 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
         return obj.club_role.get_privilege_display()
 
 
+class ClubMembershipEditSerializer(serializers.ModelSerializer):
+    """
+    Serializer to be used for PUT request to edit a ClubMembership.
+    """
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = models.ClubMembership
+        fields = ('id', 'user', 'club_role', 'joined')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     """
     Serializer for a Project.

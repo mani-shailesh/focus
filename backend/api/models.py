@@ -68,6 +68,12 @@ class Club(models.Model):
             club_role__privilege=constants.PRIVILEGE_REP
         ).exists()
 
+    def has_role(self, club_role):
+        """
+        Returns true if `club_role` is id of a valid ClubRole for this Club.
+        """
+        return club_role.club == self
+
 
 class ClubMembershipRequest(models.Model):
     """
