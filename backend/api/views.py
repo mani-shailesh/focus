@@ -35,22 +35,6 @@ class ClubViewSet(viewsets.ModelViewSet):
                        filters.ClubFilter)
     search_fields = ('name',)
 
-    @detail_route(methods=['get'])
-    def members(self, request, pk=None):
-        """
-        Return a list of the Users who are members of this club as response.
-        """
-        club = self.get_object()
-        queryset = models.ClubMembership.objects.filter(
-            club_role__club=club).distinct()
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = serializers.ClubMembershipSerializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = serializers.ClubMembershipSerializer(queryset, many=True)
-        return Response(serializer.data)
-
 
 class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
     """

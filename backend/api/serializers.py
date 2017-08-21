@@ -77,13 +77,20 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
     """
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     username = serializers.ReadOnlyField(source='user.username')
-    club_role = serializers.PrimaryKeyRelatedField(
-        queryset=models.ClubRole.objects.all())
-    privilege = serializers.ReadOnlyField(source='club_role.privilege')
+    privilege = serializers.SerializerMethodField()
+    club = serializers.PrimaryKeyRelatedField(read_only=True,
+                                              source='club_role.club')
 
     class Meta:
         model = models.ClubMembership
-        fields = ('id', 'user', 'username', 'club_role', 'joined', 'privilege')
+        fields = ('id', 'user', 'username', 'club', 'joined', 'privilege')
+
+    def get_privilege(self, obj):
+        """
+        Method to get human readable value for the privilege of this
+        membership.
+        """
+        return obj.club_role.get_privilege_display()
 
 
 class ProjectSerializer(serializers.ModelSerializer):

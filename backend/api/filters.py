@@ -80,25 +80,39 @@ class ClubMembershipRequestFilter(rest_framework_filters.BaseFilterBackend):
 
 class ClubRoleFilter(rest_framework_filters.BaseFilterBackend):
     """
-    Filter that only allows club members to see club roles of their clubs.
+    Filter that only allows:
+        1. Users to see roles in only their clubs by default.
+        2. Users to see roles in a specific club based on request, if they are
+        a member of that club.
     """
 
     def filter_queryset(self, request, queryset, view):
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+        except:
+            raise ParseError
         queryset = queryset.filter(
-            club__roles__members__id__contains=request.user.id,
+            club__roles__members__id__contains=request.user.id
         )
+        if club_id != -1:
+            queryset = queryset.filter(club__id=club_id)
         return queryset
 
 
 class ClubMembershipFilter(rest_framework_filters.BaseFilterBackend):
     """
-    Filter that only allows club members to see club roles of their clubs.
+    Filter that allows:
+        1. Users to see members of all clubs by default
+        2. Users to see members of a specific club based on request
     """
 
     def filter_queryset(self, request, queryset, view):
-        queryset = queryset.filter(
-            club_role__club__roles__members__id__contains=request.user.id,
-        )
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+        except:
+            raise ParseError
+        if club_id != -1:
+            queryset = queryset.filter(club_role__club__id=club_id)
         return queryset
 
 

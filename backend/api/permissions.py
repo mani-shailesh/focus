@@ -72,11 +72,12 @@ class ClubPermission(permissions.BasePermission):
 class ClubRolePermission(permissions.BasePermission):
     """
     Custom permission to only allow the club representative to edit a clubRole
-    and only allow club members to view a clubRole.
+    and only allow club members to see a clubRole.
     """
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
+            # Only allow the club members to view
             return obj.club.has_member(request.user)
 
         # Only allow the club representative to edit
@@ -85,14 +86,13 @@ class ClubRolePermission(permissions.BasePermission):
 
 class ClubMembershipPermission(permissions.BasePermission):
     """
-    Custom permission to only allow the club representative to edit a
-    clubMembership.
+    Custom permission to allow everyone to see membership but only allow
+    representative to edit it.
     """
 
     def has_object_permission(self, request, view, obj):
-        # Only allow a club member to view details
         if request.method in permissions.SAFE_METHODS:
-            return obj.club_role.club.has_member(request.user)
+            return True
 
         # Only allow the club representative to edit
         return obj.club_role.club.has_rep(request.user)
