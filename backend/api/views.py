@@ -9,7 +9,7 @@ from rest_framework import exceptions as rest_exceptions
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
-from . import models, serializers, permissions, filters
+from . import models, serializers, permissions, filters, exceptions
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -45,6 +45,28 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
     permission_classes = (rest_permissions.IsAuthenticated,
                           permissions.ClubMembershipRequestPermission,)
     filter_backends = (filters.ClubMembershipRequestFilter,)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure that only non-members of a Club can
+        request for it's membership if they do not have a pending request
+        already.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        club = serializer.validated_data['club']
+        if club.has_member(request.user):
+            raise exceptions.ActionNotAvailable(
+                action='create',
+                detail='You are already a member!'
+            )
+        if club.has_pending_request(request.user):
+            raise exceptions.ActionNotAvailable(
+                action='create',
+                detail='You already have a pending request for this club!'
+            )
+        return super(ClubMembershipRequestViewSet, self).create(
+            request, args, kwargs)
 
     def perform_create(self, serializer):
         """

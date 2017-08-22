@@ -74,6 +74,17 @@ class Club(models.Model):
         """
         return club_role.club == self
 
+    def has_pending_request(self, user):
+        """
+        Returns True if there is a pending ClubMembershipRequest from `user`,
+        False otherwise.
+        """
+        return ClubMembershipRequest.objects.filter(
+            user=user,
+            club=self,
+            status=constants.REQUEST_STATUS_PENDING
+        ).exists()
+
 
 class ClubMembershipRequest(models.Model):
     """
