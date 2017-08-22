@@ -166,6 +166,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
     """
     created = serializers.ReadOnlyField()
     feedbackreply = serializers.PrimaryKeyRelatedField(read_only=True)
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = models.Feedback

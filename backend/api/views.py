@@ -92,6 +92,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(membership_request)
         return Response(serializer.data)
 
+
 class ClubRoleViewSet(viewsets.ModelViewSet):
     """
     Viewset to provide actions for a ClubRole
@@ -243,6 +244,24 @@ class FeedbackViewSet(viewsets.ModelViewSet):
                           permissions.FeedbackPermission)
     filter_backends = (filters.FeedbackFilter,)
 
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure that only members of a club can submit a
+        Feedback for it.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        club = serializer.validated_data['club']
+        if not club.has_member(request.user):
+            raise rest_exceptions.PermissionDenied()
+        return super(FeedbackViewSet, self).create(request, args, kwargs)
+
+    def perform_create(self, serializer):
+        """
+        Make sure that current user is automatically registered as the author
+        """
+        serializer.save(author=self.request.user)
+
 
 class FeedbackReplyViewSet(viewsets.ModelViewSet):
     """
@@ -255,7 +274,11 @@ class FeedbackReplyViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.FeedbackReplyFilter,)
 
     def create(self, request, *args, **kwargs):
-        serializer = serializers.FeedbackReplySerializer(data=request.data)
+        """
+        Override create to make sure that only representative of a Club can
+        reply to Feedbacks addressed to it.
+        """
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         feedback = serializer.validated_data['parent']
         if not feedback.club.has_rep(request.user):
