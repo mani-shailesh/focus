@@ -227,6 +227,18 @@ class ConversationViewSet(viewsets.ModelViewSet):
                           permissions.ConversationPermission)
     search_fields = ('content',)
 
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure that only members of a Club can create
+        conversations in the Club's channel.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        club = serializer.validated_data['channel'].club
+        if not club.has_member(request.user):
+            raise rest_exceptions.PermissionDenied()
+        return super(ConversationViewSet, self).create(request, args, kwargs)
+
     def perform_create(self, serializer):
         """
         Override create to make sure that current user
