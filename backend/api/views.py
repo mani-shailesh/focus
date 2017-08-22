@@ -202,6 +202,18 @@ class PostViewSet(viewsets.ModelViewSet):
                           permissions.PostPermission)
     search_fields = ('content',)
 
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure that only representative of a Club can
+        post in the Club's channel.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        club = serializer.validated_data['channel'].club
+        if not club.has_rep(request.user):
+            raise rest_exceptions.PermissionDenied()
+        return super(PostViewSet, self).create(request, args, kwargs)
+
 
 class ConversationViewSet(viewsets.ModelViewSet):
     """
