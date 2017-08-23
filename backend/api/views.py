@@ -29,11 +29,19 @@ class ClubViewSet(viewsets.ModelViewSet):
     queryset = models.Club.objects.all()
     serializer_class = serializers.ClubSerializer
     permission_classes = (rest_permissions.IsAuthenticated,
-                          rest_permissions.DjangoModelPermissions,
                           permissions.ClubPermission)
     filter_backends = (rest_filters.SearchFilter,
                        filters.ClubFilter)
     search_fields = ('name',)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure that only secreatries can create new
+        clubs.
+        """
+        if not request.user.is_secretary():
+            raise rest_exceptions.PermissionDenied()
+        return super(ClubViewSet, self).create(request, args, kwargs)
 
 
 class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
