@@ -35,6 +35,22 @@ class Club(models.Model):
     def __unicode__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        """
+        Override save() to make sure that whenever a new Club is created, an
+        associated Channel is also created.
+        """
+        if not self.pk:
+            with transaction.atomic():
+                super(Club, self).save(*args, **kwargs)
+                Channel.objects.create(
+                    name='{} Channel'.format(self.name),
+                    description='Default channel for {}'.format(self.name),
+                    club=self,
+                )
+        else:
+            super(Club, self).save(*args, **kwargs)
+
     def add_member(self, user, privilege=constants.PRIVILEGE_MEM):
         """
         Adds `user` as a member of this Club.
