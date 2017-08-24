@@ -41,7 +41,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         """
         if not request.user.is_secretary():
             raise rest_exceptions.PermissionDenied()
-        return super(ClubViewSet, self).create(request, args, kwargs)
+        return super(ClubViewSet, self).create(request, *args, **kwargs)
 
 
 class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
@@ -74,7 +74,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
                 detail='You already have a pending request for this club!'
             )
         return super(ClubMembershipRequestViewSet, self).create(
-            request, args, kwargs)
+            request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """
@@ -162,7 +162,8 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
            .has_role(serializer.validated_data['club_role']):
             raise rest_exceptions.ValidationError(
                 'Invalid Club Role ID for this Club!')
-        return super(ClubMembershipViewSet, self).update(request, args, kwargs)
+        return super(ClubMembershipViewSet, self).update(
+            request, *args, **kwargs)
 
 
 class ChannelViewSet(viewsets.ModelViewSet):
@@ -242,7 +243,7 @@ class PostViewSet(viewsets.ModelViewSet):
         club = serializer.validated_data['channel'].club
         if not club.has_rep(request.user):
             raise rest_exceptions.PermissionDenied()
-        return super(PostViewSet, self).create(request, args, kwargs)
+        return super(PostViewSet, self).create(request, *args, **kwargs)
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -267,7 +268,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
         club = serializer.validated_data['channel'].club
         if not club.has_member(request.user):
             raise rest_exceptions.PermissionDenied()
-        return super(ConversationViewSet, self).create(request, args, kwargs)
+        return super(ConversationViewSet, self).create(
+            request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """
@@ -308,7 +310,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         club = serializer.validated_data['club']
         if not club.has_member(request.user):
             raise rest_exceptions.PermissionDenied()
-        return super(FeedbackViewSet, self).create(request, args, kwargs)
+        return super(FeedbackViewSet, self).create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """
@@ -337,4 +339,5 @@ class FeedbackReplyViewSet(viewsets.ModelViewSet):
         feedback = serializer.validated_data['parent']
         if not feedback.club.has_rep(request.user):
             raise rest_exceptions.PermissionDenied()
-        return super(FeedbackReplyViewSet, self).create(request, args, kwargs)
+        return super(FeedbackReplyViewSet, self).create(
+            request, *args, **kwargs)
