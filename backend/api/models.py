@@ -55,8 +55,10 @@ class Club(models.Model):
         """
         Adds `user` as a member of this Club.
         """
-        # TODO: Make sure that this call always succeeds.
-        club_role = ClubRole.objects.get(
+        club_role, created = ClubRole.objects.get_or_create(
+            name=constants.DISPLAY_NAME[privilege],
+            description='{} of {}'.format(constants.DISPLAY_NAME[privilege],
+                                          self.name),
             club=self,
             privilege=privilege,
         )
@@ -107,10 +109,14 @@ class ClubMembershipRequest(models.Model):
     Model to represent a request made by a User for membership in a Club
     """
     STATUS_CHOICES = (
-        (constants.REQUEST_STATUS_PENDING, 'Pending'),
-        (constants.REQUEST_STATUS_ACCEPTED, 'Accepted'),
-        (constants.REQUEST_STATUS_REJECTED, 'Rejected'),
-        (constants.REQUEST_STATUS_CANCELLED, 'Cancelled'),
+        (constants.REQUEST_STATUS_PENDING,
+         constants.DISPLAY_NAME[constants.REQUEST_STATUS_PENDING]),
+        (constants.REQUEST_STATUS_ACCEPTED,
+         constants.DISPLAY_NAME[constants.REQUEST_STATUS_ACCEPTED]),
+        (constants.REQUEST_STATUS_REJECTED,
+         constants.DISPLAY_NAME[constants.REQUEST_STATUS_REJECTED]),
+        (constants.REQUEST_STATUS_CANCELLED,
+         constants.DISPLAY_NAME[constants.REQUEST_STATUS_CANCELLED]),
     )
     user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
@@ -188,8 +194,10 @@ class ClubRole(models.Model):
     Model to represent a specific role for members in a given Club
     """
     PRIVILEGE_CHOICES = (
-        (constants.PRIVILEGE_REP, 'Representative'),
-        (constants.PRIVILEGE_MEM, 'Member')
+        (constants.PRIVILEGE_REP,
+         constants.DISPLAY_NAME[constants.PRIVILEGE_REP]),
+        (constants.PRIVILEGE_MEM,
+         constants.DISPLAY_NAME[constants.PRIVILEGE_MEM]),
     )
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
