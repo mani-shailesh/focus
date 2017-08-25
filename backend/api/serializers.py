@@ -109,11 +109,23 @@ class ProjectSerializer(serializers.ModelSerializer):
     Serializer for a Project.
     """
     started = serializers.ReadOnlyField()
+    closed = serializers.ReadOnlyField()
 
     class Meta:
         model = models.Project
         fields = ('id', 'name', 'description', 'started', 'closed', 'leader',
                   'members', 'clubs')
+
+
+class ProjectMembershipSerializer(serializers.ModelSerializer):
+    """
+    Serializer for a Project.
+    """
+    joined = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.ProjectMembership
+        fields = ('id', 'user', 'project', 'joined')
 
 
 class ChannelSerializer(serializers.ModelSerializer):

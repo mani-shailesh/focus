@@ -18,6 +18,7 @@ router.register(r'channels', views.ChannelViewSet)
 router.register(r'posts', views.PostViewSet)
 router.register(r'conversations', views.ConversationViewSet)
 router.register(r'projects', views.ProjectViewSet)
+router.register(r'projectmembers', views.ProjectMembershipViewSet)
 router.register(r'feedbacks', views.FeedbackViewSet)
 router.register(r'replies', views.FeedbackReplyViewSet)
 

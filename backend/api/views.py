@@ -290,6 +290,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.ProjectFilter,)
 
 
+class ProjectMembershipViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to provide actions for ProjectMembership
+    """
+    queryset = models.ProjectMembership.objects.all()
+    serializer_class = serializers.ProjectMembershipSerializer
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.ProjectMembershipPermission)
+    filter_backends = (filters.ProjectMembershipFilter,)
+
+
 class FeedbackViewSet(viewsets.ModelViewSet):
     """
     Viewset to provide actions for Feedback
