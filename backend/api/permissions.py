@@ -3,7 +3,7 @@ This module declares the custom Permission classes.
 """
 
 from rest_framework import permissions
-from . import models, constants
+from . import models
 
 
 class PostPermission(permissions.BasePermission):
@@ -143,6 +143,27 @@ class ProjectPermission(permissions.BasePermission):
                     obj.has_club_member(request.user)
         # Allow write permissions to only the club representative
         return obj.has_club_rep(request.user)
+
+
+class ProjectMembershipPermission(permissions.BasePermission):
+    """
+    Custom permission to only allow the club representative and project leaders
+    to delete a ProjectMembership and only allow club members to see details
+    of a ProjectMembership.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            # Only allow the members of parent clubs to view details.
+            return obj.project.has_club_member(request.user)
+
+        if request.method == 'DELETE':
+            # Only allow the leader and rep of parent clubs to delete.
+            return obj.project.has_leader(request.user) or \
+                obj.project.has_club_rep(request.user)
+
+        # Do not allow anyone to edit
+        return False
 
 
 class ClubMembershipRequestPermission(permissions.BasePermission):

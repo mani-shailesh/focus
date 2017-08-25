@@ -191,6 +191,35 @@ class ProjectFilter(rest_framework_filters.BaseFilterBackend):
         return queryset
 
 
+class ProjectMembershipFilter(rest_framework_filters.BaseFilterBackend):
+    """
+    Filter that allows:
+        1. Users to see members of only their clubs' projects by default
+        2. Users to see members of a specific clubs' projects based on request
+        2. Users to see members of a specific project based on request
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        try:
+            club_id = int(request.query_params.get('club_id', -1))
+            project_id = int(request.query_params.get('project_id', -1))
+        except:
+            raise ParseError
+
+        # Filter memberships of projects of all clubs for which the user
+        # is a member
+        queryset = queryset.filter(
+            project__clubs__roles__members__id__contains=request.user.id)
+
+        if club_id != -1:
+            queryset = queryset.filter(project__clubs__id__contains=club_id)
+
+        if project_id != -1:
+            queryset = queryset.filter(project=project_id)
+
+        return queryset
+
+
 class PostFilter(rest_framework_filters.BaseFilterBackend):
     """
     Filter that allows:
