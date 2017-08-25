@@ -241,6 +241,42 @@ class Project(models.Model):
     def __unicode__(self):
         return str(self.name)
 
+    def has_member(self, user):
+        """
+        Returns True if `user` is a member of this Project, False otherwise.
+        """
+        return self.has_leader(user) or ProjectMembership.objects.filter(
+            user=user,
+            project=self,
+        ).exists()
+
+    def has_leader(self, user):
+        """
+        Returns True if `user` is a leader of this Project, False otherwise.
+        """
+        return self.leader == user
+
+    def has_club_rep(self, user):
+        """
+        Returns True if `user` is a representative of one of the parent Clubs
+        of this Project, False otherwise.
+        """
+        return ClubMembership.objects.filter(
+            user=user,
+            club_role__club__in=self.clubs.all(),
+            club_role__privilege=constants.PRIVILEGE_REP,
+        ).exists()
+
+    def has_club_member(self, user):
+        """
+        Returns True if `user` is a member of one of the parent Clubs
+        of this Project, False otherwise.
+        """
+        return ClubMembership.objects.filter(
+            user=user,
+            club_role__club__in=self.clubs.all(),
+        ).exists()
+
 
 class ClubProject(models.Model):
     """

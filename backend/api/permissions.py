@@ -139,17 +139,10 @@ class ProjectPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
-            return request.user.is_secretary() \
-                    or models.ClubMembership.objects.filter(
-                        user__id=request.user.id,
-                        club_role__club__in=obj.clubs.all()
-                    ).exists()
+            return request.user.is_secretary() or \
+                    obj.has_club_member(request.user)
         # Allow write permissions to only the club representative
-        return models.ClubMembership.objects.filter(
-            user__id=request.user.id,
-            club_role__club__in=obj.clubs.all(),
-            club_role__privilege=constants.PRIVILEGE_REP
-        ).exists()
+        return obj.has_club_rep(request.user)
 
 
 class ClubMembershipRequestPermission(permissions.BasePermission):
