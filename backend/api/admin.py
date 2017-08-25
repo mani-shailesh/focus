@@ -18,6 +18,8 @@ class UserAdmin(AbstractUserAdmin):
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Club)
 admin.site.register(models.Project)
+admin.site.register(models.ProjectMembership)
+admin.site.register(models.ClubProject)
 admin.site.register(models.Feedback)
 admin.site.register(models.FeedbackReply)
 admin.site.register(models.Channel)
