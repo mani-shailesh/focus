@@ -289,6 +289,21 @@ class ProjectViewSet(viewsets.ModelViewSet):
                           permissions.ProjectPermission)
     filter_backends = (filters.ProjectFilter,)
 
+    def update(self, request, *args, **kwargs):
+        """
+        Override update to make sure that new leader is a member of at least
+        one of the owner Clubs of this Project.
+        """
+        project = self.get_object()
+        serializer = self.get_serializer(project,
+                                         data=request.data,
+                                         partial=True)
+        serializer.is_valid(raise_exception=True)
+        if not project.has_club_member(serializer.validated_data['leader']):
+            raise rest_exceptions.ValidationError(
+                'Leader is not a member of one of the owner Clubs!')
+        return super(ProjectViewSet, self).update(request, *args, **kwargs)
+
 
 class ProjectMembershipViewSet(viewsets.ModelViewSet):
     """
