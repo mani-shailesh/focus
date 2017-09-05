@@ -315,6 +315,26 @@ class ProjectMembershipViewSet(viewsets.ModelViewSet):
                           permissions.ProjectMembershipPermission)
     filter_backends = (filters.ProjectMembershipFilter,)
 
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure the following:
+            1. Only a Project leader or a representative of one of the owner
+            Clubs can add a member.
+            2. The added member must be a member of one of the owner Clubs
+            of the Project.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        project = serializer.validated_data['project']
+        if not (project.has_leader(request.user) or
+                project.has_club_rep(request.user)):
+            raise rest_exceptions.PermissionDenied()
+        if not project.has_club_member(serializer.validated_data['user']):
+            raise rest_exceptions.ValidationError(
+                'User is not a member of one of the owner Clubs!')
+        return super(ProjectMembershipViewSet, self).create(
+            request, *args, **kwargs)
+
 
 class FeedbackViewSet(viewsets.ModelViewSet):
     """
