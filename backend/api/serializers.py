@@ -95,9 +95,9 @@ class ClubMembershipSerializer(serializers.ModelSerializer):
 
 class ClubMembershipEditSerializer(serializers.ModelSerializer):
     """
-    Serializer to be used for PUT request to edit a ClubMembership.
+    Serializer to be used for POST/PUT request to edit a ClubMembership.
     """
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    joined = serializers.ReadOnlyField()
 
     class Meta:
         model = models.ClubMembership

@@ -144,7 +144,8 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.ClubMembershipFilter,)
 
     def get_serializer_class(self):
-        if self.action == 'retrieve' or self.action == 'update':
+        if self.action == 'retrieve' or self.action == 'update' or \
+           self.action == 'create':
             return serializers.ClubMembershipEditSerializer
         return serializers.ClubMembershipSerializer
 
@@ -158,6 +159,10 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
                                          data=request.data,
                                          partial=True)
         serializer.is_valid(raise_exception=True)
+        if club_membership.user != serializer.validated_data['user']:
+            raise rest_exceptions.ValidationError(
+                'You can not update the User!'
+            )
         if not club_membership.club_role.club \
            .has_role(serializer.validated_data['club_role']):
             raise rest_exceptions.ValidationError(

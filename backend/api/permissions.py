@@ -3,7 +3,6 @@ This module declares the custom Permission classes.
 """
 
 from rest_framework import permissions
-from . import models
 
 
 class PostPermission(permissions.BasePermission):
@@ -89,13 +88,26 @@ class ClubMembershipPermission(permissions.BasePermission):
     Custom permission to only allow the club representative to edit a
     clubMembership and only allow club members to see details of a
     clubMembership.
+    As an exception, allows all actions to a secretary.
     """
 
+    def has_permission(self, request, view):
+        """
+        Only allow a secretary to create a ClubMembership directly. Others will
+        have to go through the ClubMembershipRequest route.
+        """
+        if request.method == 'POST':
+            return request.user.is_secretary()
+        return True
+
     def has_object_permission(self, request, view, obj):
+        if request.user.is_secretary():
+            return True
+
         if request.method in permissions.SAFE_METHODS:
             return obj.club_role.club.has_member(request.user)
 
-        # Only allow the club representative to edit
+        # Only allow the club representative or a secretary to edit
         return obj.club_role.club.has_rep(request.user)
 
 
