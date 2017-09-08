@@ -309,6 +309,31 @@ class ProjectViewSet(viewsets.ModelViewSet):
                 'Leader is not a member of one of the owner Clubs!')
         return super(ProjectViewSet, self).update(request, *args, **kwargs)
 
+    @detail_route(methods=['get'])  # TODO: Change the method to PUT
+    def collaborate(self, request, pk=None):
+        """
+        Collaborate with another Club in this project.
+        """
+        project = self.get_object()
+        club_id = int(request.query_params.get('club', -1))
+
+        if club_id == -1:
+            raise rest_exceptions.ValidationError(
+                'The request must contain a club!'
+            )
+
+        try:
+            print("Hello")
+            club = models.Club.objects.get(id=club_id)
+        except models.Club.DoesNotExist:
+            raise rest_exceptions.ValidationError(
+                'The club does not exist!'
+            )
+
+        project.add_club(club)
+        serializer = serializers.ProjectSerializer(project)
+        return Response(serializer.data)
+
 
 class ProjectMembershipViewSet(viewsets.ModelViewSet):
     """

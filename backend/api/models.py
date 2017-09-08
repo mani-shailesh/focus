@@ -277,6 +277,16 @@ class Project(models.Model):
             club_role__club__in=self.clubs.all(),
         ).exists()
 
+    def add_club(self, club):
+        """
+        Adds `club` as this Project's parent Club. Safe to use even if the
+        `club` is already a parent Club.
+        """
+        ClubProject.objects.get_or_create(
+            club=club,
+            project=self,
+        )
+
 
 class ClubProject(models.Model):
     """
