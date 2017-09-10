@@ -310,7 +310,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return super(ProjectViewSet, self).update(request, *args, **kwargs)
 
     @detail_route(methods=['get'])  # TODO: Change the method to PUT
-    def collaborate(self, request, pk=None):
+    def add_club(self, request, pk=None):
         """
         Collaborate with another Club in this project.
         """
