@@ -327,12 +327,16 @@ class Project(models.Model):
             )
 
         with transaction.atomic():
+            # Also delete all ProjectMembership objects which are no longer
+            # valid.
             ClubProject.objects.filter(
                 club=club,
                 project=self,
             ).delete()
-            # TODO: Delete all ProjectMembership objects which are no longer
-            # valid.
+            ProjectMembership.objects.filter(
+                club=club,
+                project=self,
+            ).delete()
 
 
 class ClubProject(models.Model):
