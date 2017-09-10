@@ -314,8 +314,18 @@ class Project(models.Model):
                 'remove_club',
                 'The project has only one parent club!',
             )
-        # TODO: Raise an exception if the project leader is not a member of one
+
+        # Raise an exception if the project leader is not a member of one
         # of the parent clubs other than the specified one.
+        if not ClubMembership.objects.filter(
+                user=self.leader,
+                club_role__club__in=self.clubs.exclude(id=club.id),
+        ).exists():
+            raise exceptions.ActionNotAvailable(
+                'remove_club',
+                'Removing this club will leave the Project without a leader!',
+            )
+
         with transaction.atomic():
             ClubProject.objects.filter(
                 club=club,
