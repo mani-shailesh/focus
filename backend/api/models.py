@@ -277,6 +277,23 @@ class Project(models.Model):
             club_role__club__in=self.clubs.all(),
         ).exists()
 
+    def num_parent_clubs(self):
+        """
+        Return the number of parent Clubs of this Project.
+        """
+        return ClubProject.objects.filter(
+            project=self,
+        ).count()
+
+    def has_parent(self, club):
+        """
+        Returns True if `club` is a parent of this Project, False otherwise.
+        """
+        return ClubProject.objects.filter(
+            club=club,
+            project=self,
+        ).exists()
+
     def add_club(self, club):
         """
         Adds `club` as this Project's parent Club. Safe to use even if the
@@ -286,6 +303,26 @@ class Project(models.Model):
             club=club,
             project=self,
         )
+
+    def remove_club(self, club):
+        """
+        Removes `club` as this Project's parent Club. Safe to use even if the
+        `club` is the only parent Club.
+        """
+        if self.num_parent_clubs() <= 1:
+            raise exceptions.ActionNotAvailable(
+                'remove_club',
+                'The project has only one parent club!',
+            )
+        # TODO: Raise an exception if the project leader is not a member of one
+        # of the parent clubs other than the specified one.
+        with transaction.atomic():
+            ClubProject.objects.filter(
+                club=club,
+                project=self,
+            ).delete()
+            # TODO: Delete all ProjectMembership objects which are no longer
+            # valid.
 
 
 class ClubProject(models.Model):
