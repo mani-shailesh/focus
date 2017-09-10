@@ -352,12 +352,14 @@ class ProjectMembership(models.Model):
     Model to represent membership of User in a Project
     """
     user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
+    club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     project = models.ForeignKey('Project', on_delete=models.CASCADE,
                                 blank=False)
     joined = models.DateTimeField(auto_now_add=True, blank=False)
 
     def __unicode__(self):
-        return '{} is working on {}'.format(self.user, self.project)
+        return '{} from {} is working on {}'.format(self.user, self.club,
+                                                    self.project)
 
 
 class Channel(models.Model):

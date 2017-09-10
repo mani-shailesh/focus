@@ -125,7 +125,26 @@ class ProjectMembershipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ProjectMembership
-        fields = ('id', 'user', 'project', 'joined')
+        fields = ('id', 'user', 'club', 'project', 'joined')
+
+    def validate(self, data):
+        """
+        Check that the user is a member of the club.
+        """
+        club = data['club']
+        user = data['user']
+        project = data['project']
+
+        if not project.has_club_member(user):
+            raise serializers.ValidationError(
+                "The specified user must be a member of at least one of the "
+                + "parent clubs!"
+            )
+        if not club.has_member(user):
+            raise serializers.ValidationError(
+                "The specified user must be a member of the specified club!"
+            )
+        return super(ProjectMembershipSerializer, self).validate(data)
 
 
 class ChannelSerializer(serializers.ModelSerializer):
