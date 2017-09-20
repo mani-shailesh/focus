@@ -227,16 +227,19 @@ class ClubMembership(models.Model):
 
 class Project(models.Model):
     """
-    Model to represent a Project underataken by Club(s)
+    Model to represent a Project undertaken by Club(s)
     """
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
+    owner_club = models.ForeignKey('Club', on_delete=models.CASCADE,
+                                   blank=False,
+                                   related_name='projects')
     started = models.DateTimeField(auto_now_add=True, blank=False)
     closed = models.DateTimeField(default=None, blank=True, null=True)
     leader = models.ForeignKey('User', on_delete=models.PROTECT, blank=False,
                                related_name='lead_projects')
     members = models.ManyToManyField('User', through='ProjectMembership')
-    clubs = models.ManyToManyField('Club', through='ClubProject')
+    collaborating_clubs = models.ManyToManyField('Club', through='ClubProject')
 
     def __unicode__(self):
         return str(self.name)
@@ -256,76 +259,51 @@ class Project(models.Model):
         """
         return self.leader == user
 
-    def has_club_rep(self, user):
-        """
-        Returns True if `user` is a representative of one of the parent Clubs
-        of this Project, False otherwise.
-        """
-        return ClubMembership.objects.filter(
-            user=user,
-            club_role__club__in=self.clubs.all(),
-            club_role__privilege=constants.PRIVILEGE_REP,
-        ).exists()
-
     def has_club_member(self, user):
         """
         Returns True if `user` is a member of one of the parent Clubs
         of this Project, False otherwise.
         """
-        return ClubMembership.objects.filter(
-            user=user,
-            club_role__club__in=self.clubs.all(),
-        ).exists()
+        return self.owner_club.has_member(user) or \
+            ClubMembership.objects.filter(
+                user=user,
+                club_role__club__in=self.clubs.all()
+            ).exists()
 
-    def num_parent_clubs(self):
+    def num_collaborating_clubs(self):
         """
-        Return the number of parent Clubs of this Project.
+        Return the number of collaborating Clubs of this Project (excludes the
+        owner Club).
         """
         return ClubProject.objects.filter(
             project=self,
         ).count()
 
-    def has_parent(self, club):
+    def has_collaborator(self, club):
         """
-        Returns True if `club` is a parent of this Project, False otherwise.
+        Returns True if `club` is a collaborator of this Project,
+        False otherwise.
         """
         return ClubProject.objects.filter(
             club=club,
             project=self,
         ).exists()
 
-    def add_club(self, club):
+    def add_collaborator(self, club):
         """
-        Adds `club` as this Project's parent Club. Safe to use even if the
-        `club` is already a parent Club.
+        Adds `club` as this Project's collaborator Club. Safe to use even if
+        the `club` is already a collaborator Club.
         """
         ClubProject.objects.get_or_create(
             club=club,
             project=self,
         )
 
-    def remove_club(self, club):
+    def remove_collaborator(self, club):
         """
-        Removes `club` as this Project's parent Club. Safe to use even if the
-        `club` is the only parent Club.
+        Removes `club` as this Project's collaborator Club. Safe to use even if
+        the `club` is not the collaborator Club.
         """
-        if self.num_parent_clubs() <= 1:
-            raise exceptions.ActionNotAvailable(
-                'remove_club',
-                'The project has only one parent club!',
-            )
-
-        # Raise an exception if the project leader is not a member of one
-        # of the parent clubs other than the specified one.
-        if not ClubMembership.objects.filter(
-                user=self.leader,
-                club_role__club__in=self.clubs.exclude(id=club.id),
-        ).exists():
-            raise exceptions.ActionNotAvailable(
-                'remove_club',
-                'Removing this club will leave the Project without a leader!',
-            )
-
         with transaction.atomic():
             # Also delete all ProjectMembership objects which are no longer
             # valid.

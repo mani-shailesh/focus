@@ -145,21 +145,24 @@ class FeedbackReplyPermission(permissions.BasePermission):
 class ProjectPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club members to read
-    the details of a project. Also, to allow a club representative to update
-    the details of a project.
+    the details of a project. Also, to allow a club representative of the owner
+    club to update the details of a project.
     """
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return request.user.is_secretary() or \
                     obj.has_club_member(request.user)
-        # Allow write permissions to only the club representative
-        return obj.has_club_rep(request.user)
+        # Do not allow anyone to delete a Project.
+        if request.method == 'DELETE':
+            return False
+        # Allow write permissions to only the owner club representative
+        return obj.owner_club.has_rep(request.user)
 
 
 class ProjectMembershipPermission(permissions.BasePermission):
     """
-    Custom permission to only allow the club representative and project leaders
+    Custom permission to only allow the club representative and project leader
     to delete a ProjectMembership and only allow club members to see details
     of a ProjectMembership.
     """
@@ -170,9 +173,9 @@ class ProjectMembershipPermission(permissions.BasePermission):
             return obj.project.has_club_member(request.user)
 
         if request.method == 'DELETE':
-            # Only allow the leader and rep of parent clubs to delete.
+            # Only allow the leader and rep of the club to delete.
             return obj.project.has_leader(request.user) or \
-                obj.project.has_club_rep(request.user)
+                obj.club.has_rep(request.user)
 
         # Do not allow anyone to edit
         return False
