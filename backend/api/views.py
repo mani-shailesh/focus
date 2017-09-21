@@ -294,6 +294,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
                           permissions.ProjectPermission)
     filter_backends = (filters.ProjectFilter,)
 
+    def create(self, request, *args, **kwargs):
+        """
+        Override create to make sure the following:
+            1. Only the representative of a Club can create Project for that
+            Club.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        owner_club = serializer.validated_data['owner_club']
+        if not (owner_club.has_rep(request.user)):
+            raise rest_exceptions.PermissionDenied()
+        return super(ProjectViewSet, self).create(request, *args, **kwargs)
+
     @detail_route(methods=['get'])  # TODO: Change the method to PUT
     def add_club(self, request, pk=None):
         """
