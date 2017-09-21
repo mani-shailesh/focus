@@ -114,7 +114,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Project
         fields = ('id', 'name', 'description', 'started', 'closed', 'leader',
-                  'owner_club', 'members', 'collaborating_clubs')
+                  'owner_club', 'members', 'clubs')
 
 
 class ProjectMembershipSerializer(serializers.ModelSerializer):

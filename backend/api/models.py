@@ -239,7 +239,7 @@ class Project(models.Model):
     leader = models.ForeignKey('User', on_delete=models.PROTECT, blank=False,
                                related_name='lead_projects')
     members = models.ManyToManyField('User', through='ProjectMembership')
-    collaborating_clubs = models.ManyToManyField('Club', through='ClubProject')
+    clubs = models.ManyToManyField('Club', through='ClubProject')
 
     def __unicode__(self):
         return str(self.name)
