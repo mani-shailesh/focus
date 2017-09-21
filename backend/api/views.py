@@ -294,22 +294,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
                           permissions.ProjectPermission)
     filter_backends = (filters.ProjectFilter,)
 
-    def update(self, request, *args, **kwargs):
-        """
-        Override update to make sure that new leader is a member of the owner
-        Club of this Project.
-        """
-        project = self.get_object()
-        serializer = self.get_serializer(project,
-                                         data=request.data,
-                                         partial=True)
-        serializer.is_valid(raise_exception=True)
-        owner_club = serializer.validated_data['owner_club']
-        if not owner_club.has_member(serializer.validated_data['leader']):
-            raise rest_exceptions.ValidationError(
-                'Leader is not a member of of the owner Club!')
-        return super(ProjectViewSet, self).update(request, *args, **kwargs)
-
     @detail_route(methods=['get'])  # TODO: Change the method to PUT
     def add_club(self, request, pk=None):
         """

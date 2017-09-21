@@ -116,6 +116,19 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'started', 'closed', 'leader',
                   'owner_club', 'members', 'clubs')
 
+    def validate(self, data):
+        """
+        Check that the leader is a member of the the owner club.
+        """
+        club = data['owner_club']
+        leader = data['leader']
+
+        if not club.has_member(leader):
+            raise serializers.ValidationError(
+                'The specified leader must be a member of the owner club!'
+            )
+        return super(ProjectSerializer, self).validate(data)
+
 
 class ProjectMembershipSerializer(serializers.ModelSerializer):
     """
