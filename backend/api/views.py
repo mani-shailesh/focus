@@ -307,6 +307,31 @@ class ProjectViewSet(viewsets.ModelViewSet):
             raise rest_exceptions.PermissionDenied()
         return super(ProjectViewSet, self).create(request, *args, **kwargs)
 
+    @detail_route(methods=['put'])
+    def reopen(self, request, pk=None):
+        """
+        Reopen a closed project. Safe to use even if the Project is not closed.
+        """
+        project = self.get_object()
+        if not project.owner_club.has_rep(request.user):
+            raise rest_exceptions.PermissionDenied()
+        project.reopen()
+        serializer = self.serializer_class(project)
+        return Response(serializer.data)
+
+    @detail_route(methods=['put'])
+    def close(self, request, pk=None):
+        """
+        Mark the Project as closed. Safe to use even if the Project is already
+        closed.
+        """
+        project = self.get_object()
+        if not project.owner_club.has_rep(request.user):
+            raise rest_exceptions.PermissionDenied()
+        project.close()
+        serializer = self.serializer_class(project)
+        return Response(serializer.data)
+
     @detail_route(methods=['get'])  # TODO: Change the method to PUT
     def add_club(self, request, pk=None):
         """

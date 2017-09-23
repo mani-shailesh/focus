@@ -316,6 +316,22 @@ class Project(models.Model):
                 project=self,
             ).delete()
 
+    def close(self):
+        """
+        Sets this Project as closed. Safe to use even if the project is already
+        closed.
+        """
+        if self.closed is None:
+            self.closed = datetime.now()
+        self.save()
+
+    def reopen(self):
+        """
+        Re-opens the project. Safe to use even if the Project is not closed.
+        """
+        self.closed = None
+        self.save()
+
 
 class ClubProject(models.Model):
     """
