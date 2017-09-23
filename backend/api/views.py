@@ -303,7 +303,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         owner_club = serializer.validated_data['owner_club']
-        if not (owner_club.has_rep(request.user)):
+        if not owner_club.has_rep(request.user):
             raise rest_exceptions.PermissionDenied()
         return super(ProjectViewSet, self).create(request, *args, **kwargs)
 
@@ -332,7 +332,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data)
 
-    @detail_route(methods=['get'])  # TODO: Change the method to PUT
+    @detail_route(methods=['put'])
     def add_club(self, request, pk=None):
         """
         Collaborate with another Club in this project.
@@ -356,7 +356,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = serializers.ProjectSerializer(project)
         return Response(serializer.data)
 
-    @detail_route(methods=['get'])  # TODO: Change the method to PUT
+    @detail_route(methods=['put'])
     def remove_club(self, request, pk=None):
         """
         End collaboration with specified Club in this project.

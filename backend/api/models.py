@@ -55,7 +55,7 @@ class Club(models.Model):
         """
         Adds `user` as a member of this Club.
         """
-        club_role, created = ClubRole.objects.get_or_create(
+        club_role, _ = ClubRole.objects.get_or_create(
             name=constants.DISPLAY_NAME[privilege],
             description='{} of {}'.format(constants.DISPLAY_NAME[privilege],
                                           self.name),
