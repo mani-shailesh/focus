@@ -30,15 +30,39 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Rest framework apps
     'rest_framework',
-    'api.apps.ApiConfig'
+    'rest_framework.authtoken',
+
+    # django-rest-auth app
+    'rest_auth',
+
+    # django-allauth related apps
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+
+    # django-allauth social account apps
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+
+    # Our apps
+    'api.apps.ApiConfig',
 ]
+
+# Authentication related settings
+SITE_ID = 1
+# TODO: Remove this and install SMTP server
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
