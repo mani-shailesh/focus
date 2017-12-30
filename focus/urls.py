@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from .views import FacebookLogin, TwitterLogin
 
 urlpatterns = [
+    # Our api endpoints
     url(r'^api/', include('api.urls')),
+    # Django admin endpoints
     url(r'^admin/', admin.site.urls),
+    # Authorization related endpoints
     url(r'^auth/', include('rest_auth.urls')),
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
+    url(r'^auth/twitter/$', TwitterLogin.as_view(), name='twitter_login'),
 ]

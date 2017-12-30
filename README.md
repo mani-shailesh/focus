@@ -17,5 +17,6 @@ A managerial networking product for clubs operating in an educational institute
     * ```python manage.py createsuperuser``` to create a superuser for the application.
     * ```python manage.py runserver``` to run the local development server.
 * Visit admin panel on your browser at ```http://localhost:8000/admin``` and login using the superuser credentials that you created in the previous step.
-* Use this admin panel to create new users, clubs etc.
+* Create new Social Application for enabling Facebook and Twitter login using
+  your client_id and client_secret from corresponding service.
 * Visit ```http://localhost:8000/api/clubs/``` or ```http://localhost:8000/api/users/``` to check if it's working!
