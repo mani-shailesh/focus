@@ -6,13 +6,12 @@ A managerial networking product for clubs operating in an educational institute
 
 ## Setup Instructions
 
-### Backend
 * Clone the repo using ```git clone https://github.com/mani-shailesh/clubnet.git```
-* ```cd clubnet/backend```
-* ```pip install -r requirements.txt``` to install required python packages for the backend project. Before this, you may need to install ```pip``` and ```MySQL Server``` if you do not already have them. 
+* ```cd clubnet/focus```
+* ```pip install -r requirements.txt``` to install required python packages for the focus project. Before this, you may need to install ```pip``` and ```MySQL Server``` if you do not already have them. 
 * Make a copy of ```credentials.py``` in the same folder as credentials.py.template and fill in the credentials. <br />
 **NOTE : Do not push ```credentials.py``` in the repo. It should be restricted for your personal use only.**
-* Make a database with the name ```clubnet_db``` in MySQL.
+* Make a database with the name ```focus_db``` in MySQL.
 * Execute following commands in the given order:
     * ```python manage.py migrate``` to create required tables in your databse.
     * ```python manage.py createsuperuser``` to create a superuser for the application.
