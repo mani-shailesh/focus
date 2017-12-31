@@ -35,21 +35,6 @@ class ConversationPermission(permissions.BasePermission):
         return False
 
 
-class UserPermission(permissions.BasePermission):
-    """
-    Custom permission to only allow a user to update his/her details but see
-    details of everyone.
-    """
-
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to everyone
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        # Only allow a user to edit his/her details
-        return obj == request.user
-
-
 class ClubPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club representative to

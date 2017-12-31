@@ -12,14 +12,13 @@ from rest_framework.response import Response
 from . import models, serializers, permissions, filters, exceptions
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Viewset to provide actions related to Users.
     """
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
-    permission_classes = (rest_permissions.IsAuthenticated,
-                          permissions.UserPermission)
+    permission_classes = (rest_permissions.IsAuthenticated,)
 
 
 class ClubViewSet(viewsets.ModelViewSet):
