@@ -70,6 +70,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # django-rest-swagger related settings
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
+    'DOC_EXPANSION': 'list',
 }
 
 MIDDLEWARE = [
