@@ -35,6 +35,9 @@ class ClubViewSet(viewsets.ModelViewSet):
     update:
         Update the Club details. Only representative of the Club or a secretary
         can update the Club details.
+    partial_update:
+        Update the Club details. Only representative of the Club or a secretary
+        can update the Club details.
     delete:
         Delete the given Club. Only a secretary is allowed to delete the Club.
     """
@@ -58,7 +61,14 @@ class ClubViewSet(viewsets.ModelViewSet):
 
 class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for a ClubMembershipRequest
+    retrieve:
+        Return the details of given ClubMembershipRequest.
+    list:
+        Return a list of all the ClubMembershipRequests posted by the current
+        user and the ClubMembershipRequests made for a Club that the current
+        user is a representative of.
+    create:
+        Create a new ClubMembershipRequest.
     """
     queryset = models.ClubMembershipRequest.objects.all()
     serializer_class = serializers.ClubMembershipRequestSerializer
@@ -137,7 +147,24 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
 
 class ClubRoleViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for a ClubRole
+    retrieve:
+        Return the details of given ClubRole if current user is a member of the
+        correspoinding Club.
+    list:
+        Return a list of all the existing ClubRoles in the Clubs that the
+        current User is a member of.
+    create:
+        Create a new ClubRole. Only representative of the Club is
+        authorized for this.
+    update:
+        Update the ClubRole details. Only representative of the Club is
+        authorized for this.
+    partial_update:
+        Update the ClubRole details. Only representative of the Club is
+        authorized for this.
+    delete:
+        Delete the given ClubRole. Only representative of the Club is
+        authorized for this.
     """
     queryset = models.ClubRole.objects.all()
     serializer_class = serializers.ClubRoleSerializer
