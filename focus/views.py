@@ -11,14 +11,14 @@ from rest_auth.social_serializers import TwitterLoginSerializer
 
 class FacebookLogin(SocialLoginView):
     """
-    View to enable login via Facebook using Oauth2.
+    Login via Facebook using Oauth2.
     """
     adapter_class = FacebookOAuth2Adapter
 
 
 class TwitterLogin(LoginView):
     """
-    View to enable login via Twitter using Oauth.
+    Login via Twitter using Oauth.
     """
     serializer_class = TwitterLoginSerializer
     adapter_class = TwitterOAuthAdapter

@@ -14,7 +14,10 @@ from . import models, serializers, permissions, filters, exceptions
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Viewset to provide actions related to Users.
+    retrieve:
+        Return the details of given User.
+    list:
+        Return a list of all the existing Users.
     """
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
@@ -23,7 +26,17 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ClubViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for a Club
+    retrieve:
+        Return the details of given Club.
+    list:
+        Return a list of all the existing Clubs.
+    create:
+        Create a new Club. Only a secretary is allowed to create a new Club.
+    update:
+        Update the Club details. Only representative of the Club or a secretary
+        can update the Club details.
+    delete:
+        Delete the given Club. Only a secretary is allowed to delete the Club.
     """
     queryset = models.Club.objects.all()
     serializer_class = serializers.ClubSerializer
