@@ -3,6 +3,8 @@ Contains Filters for API endpoints to restrict the returned representation
 based on the request.
 """
 
+import coreapi
+
 from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import ParseError
 from django.db.models import Q
@@ -22,6 +24,14 @@ class ClubFilter(rest_framework_filters.BaseFilterBackend):
                 roles__members__id__contains=request.user.id)
         return queryset
 
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only Clubs that the current user'
+                          +' is a member of, if set to non-zero value.',
+                          type='integer'),
+        ]
+
 
 class ClubMembershipRequestFilter(rest_framework_filters.BaseFilterBackend):
     """
@@ -35,6 +45,25 @@ class ClubMembershipRequestFilter(rest_framework_filters.BaseFilterBackend):
         4. order:   Order most recently initiated first if set to -1 or unset,
         otherwise reverse the order
     """
+
+    def get_schema_fields(self, view):
+        return [
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return requests for this Club',
+                          type='integer'),
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only requests made by current'
+                          +' user if set to a non-zero value.',
+                          type='integer'),
+            coreapi.Field(name='pending', location='query', required=False,
+                          description='Return all if unset or set to -1, only'
+                          +' not pending if 0, only pending otherwise',
+                          type='integer'),
+            coreapi.Field(name='order', location='query', required=False,
+                          description='Order most recently initiated request'
+                          +' first if set to -1 or unset, otherwise reverse the'
+                          +' order', type='integer'),
+        ]
 
     def filter_queryset(self, request, queryset, view):
         try:
