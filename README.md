@@ -19,4 +19,4 @@ A managerial networking product for clubs operating in an educational institute
 * Visit admin panel on your browser at ```http://localhost:8000/admin``` and login using the superuser credentials that you created in the previous step.
 * Create new Social Application for enabling Facebook and Twitter login using
   your client_id and client_secret from corresponding service.
-* Visit ```http://localhost:8000/api/clubs/``` or ```http://localhost:8000/api/users/``` to check if it's working!
+* Visit ```http://localhost:8000/docs/``` to check if it's working!
