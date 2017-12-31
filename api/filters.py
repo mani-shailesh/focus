@@ -115,6 +115,13 @@ class ClubRoleFilter(rest_framework_filters.BaseFilterBackend):
         a member of that club.
     """
 
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return roles for this Club',
+                          type='integer'),
+        ]
+
     def filter_queryset(self, request, queryset, view):
         try:
             club_id = int(request.query_params.get('club_id', -1))
@@ -135,6 +142,13 @@ class ClubMembershipFilter(rest_framework_filters.BaseFilterBackend):
         2. Users to see members of a specific club based on request
     """
 
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return members for this Club',
+                          type='integer'),
+        ]
+
     def filter_queryset(self, request, queryset, view):
         try:
             club_id = int(request.query_params.get('club_id', -1))
@@ -152,6 +166,21 @@ class FeedbackFilter(rest_framework_filters.BaseFilterBackend):
         2. Secretaries to see all the feedbacks
         3. Users to see the feedbacks posted by them
     """
+
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return feedbacks for this Club',
+                          type='integer'),
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only feedbacks posted by current'
+                          +' user if set to a non-zero value.',
+                          type='integer'),
+            coreapi.Field(name='order', location='query', required=False,
+                          description='Order most recently posted feedback'
+                          +' first if set to -1 or unset, otherwise reverse the'
+                          +' order', type='integer'),
+        ]
 
     def filter_queryset(self, request, queryset, view):
         try:
@@ -195,6 +224,17 @@ class ProjectFilter(rest_framework_filters.BaseFilterBackend):
     Secretaries to see projects of all clubs or a selected club
     """
 
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return projects for this Club',
+                          type='integer'),
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only projects that this User is'
+                          +' a member of, if set to a non-zero value.',
+                          type='integer'),
+        ]
+
     def filter_queryset(self, request, queryset, view):
         try:
             club_id = int(request.query_params.get('club_id', -1))
@@ -227,6 +267,18 @@ class ProjectMembershipFilter(rest_framework_filters.BaseFilterBackend):
         2. Users to see members of a specific clubs' projects based on request
         2. Users to see members of a specific project based on request
     """
+
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return project memberships for'
+                          +' this Club',
+                          type='integer'),
+            coreapi.Field(name='project_id', location='query', required=False,
+                          description='Only return project memberships for'
+                          +' this Project',
+                          type='integer'),
+        ]
 
     def filter_queryset(self, request, queryset, view):
         try:
