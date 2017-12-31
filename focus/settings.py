@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
 
+    # django-rest-swagger apps
+    'rest_framework_swagger',
+
     # Our apps
     'api.apps.ApiConfig',
 ]
@@ -63,6 +66,11 @@ INSTALLED_APPS = [
 SITE_ID = 1
 # TODO: Remove this and install SMTP server
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# django-rest-swagger related settings
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
