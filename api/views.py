@@ -210,7 +210,8 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
             request, *args, **kwargs)
 
 
-class ChannelViewSet(viewsets.ModelViewSet):
+# TODO: Allow updation of Channels
+class ChannelViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Viewset to provide actions for Channels
     """
@@ -221,7 +222,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
                        filters.ChannelFilter)
     search_fields = ('name',)
 
-    @detail_route(methods=['get'])
+    @detail_route(methods=['put'])
     def subscribe(self, request, pk=None):
         """
         Subscribe the logged in user to this Channel.
@@ -250,7 +251,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
         serializer = serializers.UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['get'])
+    @detail_route(methods=['put'])
     def unsubscribe(self, request, pk=None):
         """
         Unsubscribe the logged in user from this Channel.
