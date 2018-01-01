@@ -59,6 +59,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         return super(ClubViewSet, self).create(request, *args, **kwargs)
 
 
+# TODO: Remove API endpoints for updation/deletion of ClubMembershipRequests
 class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
     """
     retrieve:

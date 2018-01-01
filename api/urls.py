@@ -8,7 +8,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 # Create a router and register the Viewsets with it.
-router = DefaultRouter()
+router = DefaultRouter()    # TODO: Create CustomRouter to filter PATCH URLs
 router.register(r'users', views.UserViewSet)
 router.register(r'clubs', views.ClubViewSet)
 router.register(r'requests', views.ClubMembershipRequestViewSet)
