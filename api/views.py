@@ -51,8 +51,7 @@ class ClubViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure that only secreatries can create new
-        clubs.
+        Create a new Club. Only a secretary is allowed to create a new Club.
         """
         if not request.user.is_secretary():
             raise rest_exceptions.PermissionDenied()
@@ -69,7 +68,10 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         user and the ClubMembershipRequests made for a Club that the current
         user is a representative of.
     create:
-        Create a new ClubMembershipRequest.
+        Create a new ClubMembershipRequest. Only non-members of a Club can
+        request for it's membership if they do not have a pending request
+        already.
+
     """
     queryset = models.ClubMembershipRequest.objects.all()
     serializer_class = serializers.ClubMembershipRequestSerializer
@@ -79,7 +81,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure that only non-members of a Club can
+        Create a new ClubMembershipRequest. Only non-members of a Club can
         request for it's membership if they do not have a pending request
         already.
         """
@@ -176,7 +178,23 @@ class ClubRoleViewSet(viewsets.ModelViewSet):
 
 class ClubMembershipViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for ClubMembership
+    retrieve:
+        Return the details of given ClubMembership if current user is a member
+        of the correspoinding Club.
+    list:
+        Return a list of ClubMembership for all Clubs or of a specific Club.
+    create:
+        Create a new ClubMembership directly(without going through the
+        ClubMembershipRequest). Only a secretary is authorized for this.
+    update:
+        Update the ClubMembership details. Only representative of the Club or a
+        secretary is authorized for this.
+    partial_update:
+        Update the ClubMembership details. Only representative of the Club or a
+        secretary is authorized for this.
+    delete:
+        Delete the ClubMembership details. Only representative of the Club or a
+        secretary is authorized for this.
     """
     queryset = models.ClubMembership.objects.all()
     permission_classes = (rest_permissions.IsAuthenticated,
@@ -191,8 +209,8 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         """
-        Override update to make sure that only valid clubRole is assigned after
-        updation.
+        Update the ClubMembership details. Only representative of the Club or a
+        secretary is authorized for this.
         """
         club_membership = self.get_object()
         serializer = self.get_serializer(club_membership,
@@ -214,7 +232,10 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
 # TODO: Allow updation of Channels
 class ChannelViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Viewset to provide actions for Channels
+    retrieve:
+        Return the details of the given Channel.
+    list:
+        Return a list of all Channels filtered by the given query params.
     """
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
