@@ -35,9 +35,6 @@ class ClubViewSet(viewsets.ModelViewSet):
     update:
         Update the Club details. Only representative of the Club or a secretary
         can update the Club details.
-    partial_update:
-        Update the Club details. Only representative of the Club or a secretary
-        can update the Club details.
     delete:
         Delete the given Club. Only a secretary is allowed to delete the Club.
     """
@@ -162,9 +159,6 @@ class ClubRoleViewSet(viewsets.ModelViewSet):
     update:
         Update the ClubRole details. Only representative of the Club is
         authorized for this.
-    partial_update:
-        Update the ClubRole details. Only representative of the Club is
-        authorized for this.
     delete:
         Delete the given ClubRole. Only representative of the Club is
         authorized for this.
@@ -187,9 +181,6 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
         Create a new ClubMembership directly(without going through the
         ClubMembershipRequest). Only a secretary is authorized for this.
     update:
-        Update the ClubMembership details. Only representative of the Club or a
-        secretary is authorized for this.
-    partial_update:
         Update the ClubMembership details. Only representative of the Club or a
         secretary is authorized for this.
     delete:

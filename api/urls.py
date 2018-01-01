@@ -6,9 +6,10 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 
 from . import views
+from .routers import CustomDefaultRouter
 
 # Create a router and register the Viewsets with it.
-router = DefaultRouter()    # TODO: Create CustomRouter to filter PATCH URLs
+router = CustomDefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'clubs', views.ClubViewSet)
 router.register(r'requests', views.ClubMembershipRequestViewSet)
