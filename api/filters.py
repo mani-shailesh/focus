@@ -310,6 +310,17 @@ class PostFilter(rest_framework_filters.BaseFilterBackend):
     as per their `created` attribute
     """
 
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='channel_id', location='query', required=False,
+                          description='Only return Posts for this Channel',
+                          type='integer'),
+            coreapi.Field(name='order', location='query', required=False,
+                          description='Order most recent post first if set to'
+                          +' -1 or unset, otherwise reverse the order',
+                          type='integer'),
+        ]
+
     def filter_queryset(self, request, queryset, view):
         try:
             channel_id = int(request.query_params.get('channel_id', -1))
@@ -341,6 +352,25 @@ class ConversationFilter(rest_framework_filters.BaseFilterBackend):
     2. Impose an ascending or descending order on the conversations as per
     their `created` attribute
     """
+
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='parent_id', location='query', required=False,
+                          description='Only return Conversations that are'
+                          +' children of this Conversation.',
+                          type='integer'),
+            coreapi.Field(name='channel_id', location='query', required=False,
+                          description='Only return Conversations for this'
+                          +' Channel', type='integer'),
+            coreapi.Field(name='order', location='query', required=False,
+                          description='Order most recent Conversation first if'
+                          +' set to -1 or unset, otherwise reverse the order',
+                          type='integer'),
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only Conversations authored by'
+                          +' the current user, if set to a non-zero value.',
+                          type='integer'),
+        ]
 
     def filter_queryset(self, request, queryset, view):
         try:
@@ -384,6 +414,17 @@ class ChannelFilter(rest_framework_filters.BaseFilterBackend):
     Class to filter out the channels as per the request.
     """
 
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return Channels for this'
+                          +' Club', type='integer'),
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only Channels subscribed by'
+                          +' the current user, if set to a non-zero value.',
+                          type='integer'),
+        ]
+
     def filter_queryset(self, request, queryset, view):
         try:
             only_my_channels = bool(int(
@@ -411,6 +452,21 @@ class FeedbackReplyFilter(rest_framework_filters.BaseFilterBackend):
     2. Secretaries to see all the feedback replies
     3. Users to see the replies to feedbacks posted by them
     """
+
+    def get_schema_fields(self, view):
+        return[
+            coreapi.Field(name='club_id', location='query', required=False,
+                          description='Only return FeedbackReplies for this'
+                          +' Club', type='integer'),
+            coreapi.Field(name='only_my', location='query', required=False,
+                          description='Return only replies to the Feedbacks '
+                          +'posted by current user if set to a non-zero value.',
+                          type='integer'),
+            coreapi.Field(name='order', location='query', required=False,
+                          description='Order most recently posted reply'
+                          +' first if set to -1 or unset, otherwise reverse the'
+                          +' order', type='integer'),
+        ]
 
     def filter_queryset(self, request, queryset, view):
         try:
