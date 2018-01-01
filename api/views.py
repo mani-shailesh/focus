@@ -108,7 +108,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         """
         serializer.save(user=self.request.user)
 
-    @detail_route(methods=['get'])
+    @detail_route(methods=['put'])
     def accept(self, request, pk=None):
         """
         Accept the request if the current user is representative of the club
@@ -121,7 +121,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(membership_request)
         return Response(serializer.data)
 
-    @detail_route(methods=['get'])
+    @detail_route(methods=['put'])
     def reject(self, request, pk=None):
         """
         Reject the request if the current user is representative of the club
@@ -134,7 +134,7 @@ class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(membership_request)
         return Response(serializer.data)
 
-    @detail_route(methods=['get'])
+    @detail_route(methods=['put'])
     def cancel(self, request, pk=None):
         """
         Accept the request if the current user has initiated this request and
