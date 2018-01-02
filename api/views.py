@@ -363,7 +363,7 @@ class ConversationViewSet(custom_viewsets.CreateListRetrieveViewSet):
         serializer.save(author=self.request.user)
 
 
-class ProjectViewSet(viewsets.ModelViewSet):
+class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
     """
     Viewset to provide actions for Project
     """

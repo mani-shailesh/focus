@@ -23,3 +23,13 @@ class UpdateListRetrieveViewSet(mixins.UpdateModelMixin,
     A viewset that provides `retrieve`, `update`, and `list` actions.
     """
     pass
+
+class ReadWriteOnlyViewSet(mixins.CreateModelMixin,
+                           mixins.UpdateModelMixin,
+                           mixins.ListModelMixin,
+                           mixins.RetrieveModelMixin,
+                           viewsets.GenericViewSet):
+    """
+    A viewset that provides `create`, `retrieve`, `update`, and `list` actions.
+    """
+    pass
