@@ -232,8 +232,8 @@ class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
     """
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
-    # TODO: Add permission to restrict update privileges.
-    permission_classes = (rest_permissions.IsAuthenticated,)
+    permission_classes = (rest_permissions.IsAuthenticated,
+                          permissions.ChannelPermission)
     filter_backends = (rest_filters.SearchFilter,
                        filters.ChannelFilter)
     search_fields = ('name',)

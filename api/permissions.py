@@ -35,6 +35,23 @@ class ConversationPermission(permissions.BasePermission):
         return False
 
 
+class ChannelPermission(permissions.BasePermission):
+    """
+    Custom permission to only allow the Club representative to update a
+    Channel.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to everyone
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        # Only allow the Club rep to update
+        if request.method == 'PUT':
+            return obj.club.has_rep(request.user)
+        # No one is allowed to directly create or delete a Channel
+        return False
+
+
 class ClubPermission(permissions.BasePermission):
     """
     Custom permission to only allow a secretary or the club representative to
