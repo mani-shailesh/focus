@@ -412,7 +412,7 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
         return Response(serializer.data)
 
 
-class ProjectMembershipViewSet(viewsets.ModelViewSet):
+class ProjectMembershipViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     Viewset to provide actions for ProjectMembership
     """
