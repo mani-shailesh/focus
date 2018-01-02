@@ -307,7 +307,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return super(PostViewSet, self).create(request, *args, **kwargs)
 
 
-class ConversationViewSet(viewsets.ModelViewSet):
+class ConversationViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     Viewset to provide actions for Conversations.
     """
@@ -334,8 +334,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Override create to make sure that current user
-        is automatically registered as the author
+        Make sure that the current user is automatically registered as the
+        author
         """
         serializer.save(author=self.request.user)
 
