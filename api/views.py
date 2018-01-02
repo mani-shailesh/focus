@@ -365,7 +365,19 @@ class ConversationViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
 class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
     """
-    Viewset to provide actions for Project
+    retrieve:
+        Return the details of given Project. Only the members of the Club or a
+        secretary is authorized for this.
+    list:
+        Return a list of all the Projects of the Clubs that the user is a
+        member of. For a secretary, return the Projects of all the Clubs. Also,
+        filter the results based on query parameters.
+    create:
+        Create a new Project. Only representative of the Club is authorized
+        for this.
+    update:
+        Update the Project details. Only representative of the Club is
+        authorized for this.
     """
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
@@ -375,9 +387,8 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure the following:
-            1. Only the representative of a Club can create Project for that
-            Club.
+        Create a new Project. Only representative of the Club is authorized
+        for this.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -390,6 +401,7 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
     def reopen(self, request, pk=None):
         """
         Reopen a closed project. Safe to use even if the Project is not closed.
+        Only Club rep is authorized for this.
         """
         project = self.get_object()
         if not project.owner_club.has_rep(request.user):
@@ -402,7 +414,7 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
     def close(self, request, pk=None):
         """
         Mark the Project as closed. Safe to use even if the Project is already
-        closed.
+        closed. Only Club rep is authorized for this.
         """
         project = self.get_object()
         if not project.owner_club.has_rep(request.user):
@@ -414,7 +426,19 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
 
 class ProjectMembershipViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
-    Viewset to provide actions for ProjectMembership
+    retrieve:
+        Return the details of given ProjectMembership. Only the corresponding
+        Club members are authorized for this.
+    list:
+        Return a list of all the ProjectMemberships from the Clubs that the
+        current User is a member of. Also, filter the results based on the
+        provided query parameters.
+    create:
+        Create a new ProjectMembership. Only representative of the Club or the
+        Project leader is authorized for this.
+    delete:
+        Delete the given ProjectMembership. Only representative of the Club or
+        the Project leader is authorized for this.
     """
     queryset = models.ProjectMembership.objects.all()
     serializer_class = serializers.ProjectMembershipSerializer
@@ -424,9 +448,8 @@ class ProjectMembershipViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure the following:
-            1. Only a Project leader or a representative of one of the owner
-            Clubs can add a member.
+        Create a new ProjectMembership. Only representative of the Club or the
+        Project leader is authorized for this.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
