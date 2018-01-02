@@ -284,7 +284,21 @@ class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
 
 class PostViewSet(viewsets.ModelViewSet):
     """
-    Viewset to provide actions for Posts.
+    retrieve:
+        Return the details of given Post.
+    list:
+        Return a list of all the Posts from Channels subscribed by the current
+        User, if no other option is provided. Otherwise, return the results
+        based on the provided options.
+    create:
+        Create a new Post. Only representative of the Club is
+        authorized for this.
+    update:
+        Update the Post details. Only representative of the Club is
+        authorized for this.
+    delete:
+        Delete the given Post. Only representative of the Club is
+        authorized for this.
     """
     queryset = models.Post.objects.all()
     serializer_class = serializers.PostSerializer
@@ -296,8 +310,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure that only representative of a Club can
-        post in the Club's channel.
+        Create a new Post. Only representative of the Club is
+        authorized for this.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -309,7 +323,16 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class ConversationViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
-    Viewset to provide actions for Conversations.
+    retrieve:
+        Return the details of the given Conversation. Only members of the
+        correspoinding Club are authorized for this.
+    list:
+        Return a list of all the Conversations on Channels of the Clubs that
+        the current User is a member of. Also, filter and order the results
+        based on the provided query parameters.
+    create:
+        Create a new Conversation. Only members of the Club are authorized
+        for this.
     """
     queryset = models.Conversation.objects.all()
     serializer_class = serializers.ConversationSerializer
@@ -321,8 +344,8 @@ class ConversationViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure that only members of a Club can create
-        conversations in the Club's channel.
+        Create a new Conversation. Only members of the Club are authorized
+        for this.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
