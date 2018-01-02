@@ -10,6 +10,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from . import models, serializers, permissions, filters, exceptions
+from . import viewsets as custom_viewsets
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -55,8 +56,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         return super(ClubViewSet, self).create(request, *args, **kwargs)
 
 
-# TODO: Remove API endpoints for updation/deletion of ClubMembershipRequests
-class ClubMembershipRequestViewSet(viewsets.ModelViewSet):
+class ClubMembershipRequestViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     retrieve:
         Return the details of given ClubMembershipRequest.
