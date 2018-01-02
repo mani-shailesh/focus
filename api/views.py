@@ -220,16 +220,19 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
             request, *args, **kwargs)
 
 
-# TODO: Allow updation of Channels
-class ChannelViewSet(viewsets.ReadOnlyModelViewSet):
+class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
     """
     retrieve:
         Return the details of the given Channel.
     list:
         Return a list of all Channels filtered by the given query params.
+    update:
+        Update the Channel details. Only representative of the corresponding
+        Club is authorized for this.
     """
     queryset = models.Channel.objects.all()
     serializer_class = serializers.ChannelSerializer
+    # TODO: Add permission to restrict update privileges.
     permission_classes = (rest_permissions.IsAuthenticated,)
     filter_backends = (rest_filters.SearchFilter,
                        filters.ChannelFilter)
