@@ -64,6 +64,11 @@ INSTALLED_APPS = [
 
 # Authentication related settings
 SITE_ID = 1
+ACCOUNT_ADAPTER = 'api.adapters.CustomDefaultAccountAdapter'
+
+# URL to be sent for email confirmation. It must end with '/'.
+EMAIL_CONFIRMATION_URL = 'https://focus.com/verifyemail/'
+
 # TODO: Remove this and install SMTP server
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
