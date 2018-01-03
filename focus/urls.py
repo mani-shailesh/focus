@@ -19,6 +19,8 @@ from django.contrib import admin
 from .views import FacebookLogin, TwitterLogin
 
 urlpatterns = [
+    # Django auth urls
+    url(r'^', include('django.contrib.auth.urls')),
     # Our api endpoints
     url(r'^api/', include('api.urls')),
     # Django admin endpoints
