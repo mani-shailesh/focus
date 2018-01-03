@@ -2,7 +2,9 @@
 This modules contains classes to define serialization of Models.
 """
 
+from django.conf import settings
 from rest_framework import serializers
+from rest_auth.serializers import PasswordResetSerializer
 from . import models
 from . import constants
 
@@ -227,3 +229,24 @@ class FeedbackReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.FeedbackReply
         fields = ('id', 'content', 'created', 'parent')
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    """
+    Custom serializer to provide additional options related to the email sent
+    on password rest request.
+    """
+
+    def get_email_options(self):
+        """
+        Override this to provide custom template and success url.
+        """
+        return {
+            'email_template_name':
+                'account/email/password_reset_key_message.txt',
+            'subject_template_name':
+                'account/email/password_reset_key_subject.txt',
+            'extra_email_context': {
+                'password_reset_url': settings.PASSWORD_RESET_URL,
+            },
+        }

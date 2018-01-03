@@ -68,6 +68,7 @@ ACCOUNT_ADAPTER = 'api.adapters.CustomDefaultAccountAdapter'
 
 # URL to be sent for email confirmation. It must end with '/'.
 EMAIL_CONFIRMATION_URL = 'https://focus.com/verifyemail/'
+PASSWORD_RESET_URL = 'https://focus.com/resetpassword/'
 
 # TODO: Remove this and install SMTP server
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -183,4 +184,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 50,
+}
+
+# rest-auth settings
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER':
+    'api.serializers.CustomPasswordResetSerializer',
 }
