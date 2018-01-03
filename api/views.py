@@ -463,7 +463,17 @@ class ProjectMembershipViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
 class FeedbackViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
-    Viewset to provide actions for Feedback
+    retrieve:
+        Return the details of the given Feedback. Only representative of the
+        correspoinding Club or a secretary is authorized for this.
+    list:
+        Return a list of all the Feedbacks for Clubs that the current User is a
+        representative of. Feedbacks for all Clubs are returned to the
+        secretaries. Also, filter and order the results based on the provided
+        query parameters.
+    create:
+        Create a new Feedback. Only members of the Club are authorized
+        for this.
     """
     queryset = models.Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
@@ -473,8 +483,8 @@ class FeedbackViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure that only members of a club can submit a
-        Feedback for it.
+        Create a new Feedback. Only members of the Club are authorized
+        for this.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -492,7 +502,19 @@ class FeedbackViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
 class FeedbackReplyViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
-    Viewset to provide actions for FeedbackReply
+    retrieve:
+        Return the details of the given FeedbackReply. Only the author of the
+        corresponding Feedback, the representative of the Club and a secretary
+        is authorized for this.
+    list:
+        Return a list of all the FeedbackReplies for feedbacks sent by the
+        current User and FeedbackReplies for the Clubs that the current User is
+        a representative of. All FeedbackReplies are returned to the
+        secretaries. Also, filter and order the results based on the provided
+        query parameters.
+    create:
+        Create a new FeedbackReply. Only representative of the Club is
+        authorized for this.
     """
     queryset = models.FeedbackReply.objects.all()
     serializer_class = serializers.FeedbackReplySerializer
@@ -502,8 +524,8 @@ class FeedbackReplyViewSet(custom_viewsets.CreateListRetrieveViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create to make sure that only representative of a Club can
-        reply to Feedbacks addressed to it.
+        Create a new FeedbackReply. Only representative of the Club is
+        authorized for this.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
