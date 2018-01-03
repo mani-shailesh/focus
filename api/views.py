@@ -461,7 +461,7 @@ class ProjectMembershipViewSet(custom_viewsets.CreateListRetrieveViewSet):
             request, *args, **kwargs)
 
 
-class FeedbackViewSet(viewsets.ModelViewSet):
+class FeedbackViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     Viewset to provide actions for Feedback
     """
@@ -490,7 +490,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class FeedbackReplyViewSet(viewsets.ModelViewSet):
+class FeedbackReplyViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     Viewset to provide actions for FeedbackReply
     """
