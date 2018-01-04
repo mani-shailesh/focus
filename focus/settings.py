@@ -70,8 +70,16 @@ ACCOUNT_ADAPTER = 'api.adapters.CustomDefaultAccountAdapter'
 EMAIL_CONFIRMATION_URL = 'https://focus.com/verifyemail/'
 PASSWORD_RESET_URL = 'https://focus.com/resetpassword/'
 
-# TODO: Remove this and install SMTP server
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Uncomment the following line to print the mails on console instead of
+# actually using SMTP server to send them.
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# SMTP server details
+EMAIL_HOST = credentials.EMAIL_HOST
+EMAIL_PORT = credentials.EMAIL_PORT
+EMAIL_HOST_USER = credentials.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = credentials.EMAIL_HOST_PASSWORD
+EMAIL_USE_TLS = credentials.EMAIL_USE_TLS
 
 # django-rest-swagger related settings
 SWAGGER_SETTINGS = {
