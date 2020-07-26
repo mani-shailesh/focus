@@ -3,7 +3,8 @@ django-allauth==0.42.0
 django-crispy-forms==1.9.2
 django-filter==2.3.0
 django-rest-auth==0.9.5
-django-rest-swagger==2.2.0
 djangorestframework==3.11.0
 Markdown==3.2.2
 mysqlclient==2.0.1
+pyyaml==5.3.1
+drf-yasg==1.17.1

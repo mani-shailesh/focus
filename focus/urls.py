@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
-from rest_framework_swagger.views import get_swagger_view
 from django.contrib import admin
 from .views import FacebookLogin, TwitterLogin
 
@@ -30,6 +29,4 @@ urlpatterns = [
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
     url(r'^auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
     url(r'^auth/twitter/$', TwitterLogin.as_view(), name='twitter_login'),
-    # Documentation related endpoints
-    url(r'^docs/$', get_swagger_view(title='Focus API'))
 ]

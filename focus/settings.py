@@ -57,8 +57,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
 
-    # django-rest-swagger apps
-    'rest_framework_swagger',
+    # swagger generation
+    'drf_yasg',
 
     # Our apps
     'api.apps.ApiConfig',
