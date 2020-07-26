@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework import permissions as rest_permissions
 from rest_framework import filters as rest_filters
 from rest_framework import exceptions as rest_exceptions
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from . import models, serializers, permissions, filters, exceptions
@@ -105,7 +105,7 @@ class ClubMembershipRequestViewSet(custom_viewsets.CreateListRetrieveViewSet):
         """
         serializer.save(user=self.request.user)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def accept(self, request, pk=None):
         """
         Accept the request if the current user is representative of the club
@@ -118,7 +118,7 @@ class ClubMembershipRequestViewSet(custom_viewsets.CreateListRetrieveViewSet):
         serializer = self.serializer_class(membership_request)
         return Response(serializer.data)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def reject(self, request, pk=None):
         """
         Reject the request if the current user is representative of the club
@@ -131,7 +131,7 @@ class ClubMembershipRequestViewSet(custom_viewsets.CreateListRetrieveViewSet):
         serializer = self.serializer_class(membership_request)
         return Response(serializer.data)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def cancel(self, request, pk=None):
         """
         Accept the request if the current user has initiated this request and
@@ -238,7 +238,7 @@ class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
                        filters.ChannelFilter)
     search_fields = ('name',)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def subscribe(self, request, pk=None):
         """
         Subscribe the logged in user to this Channel.
@@ -251,7 +251,7 @@ class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
         )
         return Response(serializer.data)
 
-    @detail_route(methods=['get'])
+    @action(detail=True, methods=['get'])
     def subscribers(self, request, pk=None):
         """
         Return a list of the Users who are subscribers of this Channel
@@ -267,7 +267,7 @@ class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
         serializer = serializers.UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def unsubscribe(self, request, pk=None):
         """
         Unsubscribe the logged in user from this Channel.
@@ -397,7 +397,7 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
             raise rest_exceptions.PermissionDenied()
         return super(ProjectViewSet, self).create(request, *args, **kwargs)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def reopen(self, request, pk=None):
         """
         Reopen a closed project. Safe to use even if the Project is not closed.
@@ -410,7 +410,7 @@ class ProjectViewSet(custom_viewsets.ReadWriteOnlyViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data)
 
-    @detail_route(methods=['put'])
+    @action(detail=True, methods=['put'])
     def close(self, request, pk=None):
         """
         Mark the Project as closed. Safe to use even if the Project is already

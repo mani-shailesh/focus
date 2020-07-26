@@ -2,11 +2,10 @@
 This module contains the custom Router(s) needed for this app.
 """
 
-from rest_framework.routers import (Route, DynamicDetailRoute,
-                                    DynamicListRoute, DefaultRouter)
+from rest_framework.routers import (Route, DynamicRoute, SimpleRouter)
 
 
-class CustomDefaultRouter(DefaultRouter):
+class CustomDefaultRouter(SimpleRouter):
     """
     Default router for APIs that generates routes for GET, POST, PUT and DELETE
     methods.
@@ -14,39 +13,31 @@ class CustomDefaultRouter(DefaultRouter):
     routes = [
         # List route.
         Route(
-            url=r'^{prefix}{trailing_slash}$',
+            url=r'^{prefix}$',
             mapping={
                 'get': 'list',
                 'post': 'create'
             },
             name='{basename}-list',
+            detail=False,
             initkwargs={'suffix': 'List'}
-        ),
-        # Dynamically generated list routes.
-        # Generated using @list_route decorator
-        # on methods of the viewset.
-        DynamicListRoute(
-            url=r'^{prefix}/{methodname}{trailing_slash}$',
-            name='{basename}-{methodnamehyphen}',
-            initkwargs={}
         ),
         # Detail route.
         Route(
-            url=r'^{prefix}/{lookup}{trailing_slash}$',
+            url=r'^{prefix}/{lookup}$',
             mapping={
                 'get': 'retrieve',
                 'put': 'update',
                 'delete': 'destroy'
             },
             name='{basename}-detail',
+            detail=True,
             initkwargs={'suffix': 'Instance'}
         ),
-        # Dynamically generated detail routes.
-        # Generated using @detail_route decorator on methods of the
-        # viewset.
-        DynamicDetailRoute(
-            url=r'^{prefix}/{lookup}/{methodname}{trailing_slash}$',
-            name='{basename}-{methodnamehyphen}',
+        DynamicRoute(
+            url=r'^{prefix}/{lookup}/{url_path}$',
+            name='{basename}-{url_name}',
+            detail=True,
             initkwargs={}
         ),
     ]
