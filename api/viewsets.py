@@ -24,6 +24,7 @@ class UpdateListRetrieveViewSet(mixins.UpdateModelMixin,
     """
     pass
 
+
 class ReadWriteOnlyViewSet(mixins.CreateModelMixin,
                            mixins.UpdateModelMixin,
                            mixins.ListModelMixin,

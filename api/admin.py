@@ -4,6 +4,7 @@ This module declares Admin class and registers Models to it.
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AbstractUserAdmin
+
 from . import models
 
 

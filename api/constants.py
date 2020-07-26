@@ -13,10 +13,10 @@ REQUEST_STATUS_CANCELLED = "CN"
 
 # Dictionaries
 DISPLAY_NAME = {
-    PRIVILEGE_REP:  "Representative",
-    PRIVILEGE_MEM:  "Member",
+    PRIVILEGE_REP: "Representative",
+    PRIVILEGE_MEM: "Member",
     REQUEST_STATUS_PENDING: "Pending",
-    REQUEST_STATUS_ACCEPTED:    "Accepted",
-    REQUEST_STATUS_REJECTED:  "Rejected",
-    REQUEST_STATUS_CANCELLED:   "Cancelled",
+    REQUEST_STATUS_ACCEPTED: "Accepted",
+    REQUEST_STATUS_REJECTED: "Rejected",
+    REQUEST_STATUS_CANCELLED: "Cancelled",
 }

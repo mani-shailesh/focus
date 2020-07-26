@@ -25,10 +25,10 @@ class ClubFilter(rest_framework_filters.BaseFilterBackend):
         return queryset
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only Clubs that the current user'
-                          +' is a member of, if set to non-zero value.',
+                                      + ' is a member of, if set to non-zero value.',
                           type='integer'),
         ]
 
@@ -53,16 +53,16 @@ class ClubMembershipRequestFilter(rest_framework_filters.BaseFilterBackend):
                           type='integer'),
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only requests made by current'
-                          +' user if set to a non-zero value.',
+                                      + ' user if set to a non-zero value.',
                           type='integer'),
             coreapi.Field(name='pending', location='query', required=False,
                           description='Return all if unset or set to -1, only'
-                          +' not pending if 0, only pending otherwise',
+                                      + ' not pending if 0, only pending otherwise',
                           type='integer'),
             coreapi.Field(name='order', location='query', required=False,
                           description='Order most recently initiated request'
-                          +' first if set to -1 or unset, otherwise reverse the'
-                          +' order', type='integer'),
+                                      + ' first if set to -1 or unset, otherwise reverse the'
+                                      + ' order', type='integer'),
         ]
 
     def filter_queryset(self, request, queryset, view):
@@ -116,7 +116,7 @@ class ClubRoleFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return roles for this Club',
                           type='integer'),
@@ -143,7 +143,7 @@ class ClubMembershipFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return members for this Club',
                           type='integer'),
@@ -168,18 +168,18 @@ class FeedbackFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return feedbacks for this Club',
                           type='integer'),
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only feedbacks posted by current'
-                          +' user if set to a non-zero value.',
+                                      + ' user if set to a non-zero value.',
                           type='integer'),
             coreapi.Field(name='order', location='query', required=False,
                           description='Order most recently posted feedback'
-                          +' first if set to -1 or unset, otherwise reverse the'
-                          +' order', type='integer'),
+                                      + ' first if set to -1 or unset, otherwise reverse the'
+                                      + ' order', type='integer'),
         ]
 
     def filter_queryset(self, request, queryset, view):
@@ -225,13 +225,13 @@ class ProjectFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return projects for this Club',
                           type='integer'),
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only projects that this User is'
-                          +' a member of, if set to a non-zero value.',
+                                      + ' a member of, if set to a non-zero value.',
                           type='integer'),
         ]
 
@@ -269,14 +269,14 @@ class ProjectMembershipFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return project memberships for'
-                          +' this Club',
+                                      + ' this Club',
                           type='integer'),
             coreapi.Field(name='project_id', location='query', required=False,
                           description='Only return project memberships for'
-                          +' this Project',
+                                      + ' this Project',
                           type='integer'),
         ]
 
@@ -311,13 +311,13 @@ class PostFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='channel_id', location='query', required=False,
                           description='Only return Posts for this Channel',
                           type='integer'),
             coreapi.Field(name='order', location='query', required=False,
                           description='Order most recent post first if set to'
-                          +' -1 or unset, otherwise reverse the order',
+                                      + ' -1 or unset, otherwise reverse the order',
                           type='integer'),
         ]
 
@@ -354,21 +354,21 @@ class ConversationFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='parent_id', location='query', required=False,
                           description='Only return Conversations that are'
-                          +' children of this Conversation.',
+                                      + ' children of this Conversation.',
                           type='integer'),
             coreapi.Field(name='channel_id', location='query', required=False,
                           description='Only return Conversations for this'
-                          +' Channel', type='integer'),
+                                      + ' Channel', type='integer'),
             coreapi.Field(name='order', location='query', required=False,
                           description='Order most recent Conversation first if'
-                          +' set to -1 or unset, otherwise reverse the order',
+                                      + ' set to -1 or unset, otherwise reverse the order',
                           type='integer'),
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only Conversations authored by'
-                          +' the current user, if set to a non-zero value.',
+                                      + ' the current user, if set to a non-zero value.',
                           type='integer'),
         ]
 
@@ -415,13 +415,13 @@ class ChannelFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return Channels for this'
-                          +' Club', type='integer'),
+                                      + ' Club', type='integer'),
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only Channels subscribed by'
-                          +' the current user, if set to a non-zero value.',
+                                      + ' the current user, if set to a non-zero value.',
                           type='integer'),
         ]
 
@@ -454,18 +454,18 @@ class FeedbackReplyFilter(rest_framework_filters.BaseFilterBackend):
     """
 
     def get_schema_fields(self, view):
-        return[
+        return [
             coreapi.Field(name='club_id', location='query', required=False,
                           description='Only return FeedbackReplies for this'
-                          +' Club', type='integer'),
+                                      + ' Club', type='integer'),
             coreapi.Field(name='only_my', location='query', required=False,
                           description='Return only replies to the Feedbacks '
-                          +'posted by current user if set to a non-zero value.',
+                                      + 'posted by current user if set to a non-zero value.',
                           type='integer'),
             coreapi.Field(name='order', location='query', required=False,
                           description='Order most recently posted reply'
-                          +' first if set to -1 or unset, otherwise reverse the'
-                          +' order', type='integer'),
+                                      + ' first if set to -1 or unset, otherwise reverse the'
+                                      + ' order', type='integer'),
         ]
 
     def filter_queryset(self, request, queryset, view):

@@ -3,10 +3,11 @@ Defines the models used in the app.
 """
 
 from __future__ import unicode_literals
+
 from datetime import datetime
 
-from django.db import models, transaction
 from django.contrib.auth.models import AbstractUser
+from django.db import models, transaction
 
 from . import constants, exceptions
 
@@ -145,7 +146,7 @@ class ClubMembershipRequest(models.Model):
             raise exceptions.ActionNotAvailable(
                 action='accept',
                 detail='The request is already marked as ' +
-                self.get_status_display() + '. Can not be accepted!'
+                       self.get_status_display() + '. Can not be accepted!'
             )
 
         with transaction.atomic():
@@ -167,7 +168,7 @@ class ClubMembershipRequest(models.Model):
             raise exceptions.ActionNotAvailable(
                 action='reject',
                 detail='The request is already marked as ' +
-                self.get_status_display() + '. Can not be rejected!'
+                       self.get_status_display() + '. Can not be rejected!'
             )
         self.status = constants.REQUEST_STATUS_REJECTED
         self.closed = datetime.now()
@@ -182,7 +183,7 @@ class ClubMembershipRequest(models.Model):
             raise exceptions.ActionNotAvailable(
                 action='cancel',
                 detail='The request is already marked as ' +
-                self.get_status_display() + '. Can not be cancelled!'
+                       self.get_status_display() + '. Can not be cancelled!'
             )
         self.status = constants.REQUEST_STATUS_CANCELLED
         self.closed = datetime.now()
@@ -265,10 +266,10 @@ class Project(models.Model):
         of this Project, False otherwise.
         """
         return self.owner_club.has_member(user) or \
-            ClubMembership.objects.filter(
-                user=user,
-                club_role__club__in=self.clubs.all()
-            ).exists()
+               ClubMembership.objects.filter(
+                   user=user,
+                   club_role__club__in=self.clubs.all()
+               ).exists()
 
     def num_collaborating_clubs(self):
         """

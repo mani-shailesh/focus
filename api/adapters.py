@@ -15,7 +15,6 @@ class CustomDefaultAccountAdapter(DefaultAccountAdapter):
         """
         Override this to inject our custom 'activate_url' in the context
         """
-        context['activate_url'] = settings.EMAIL_CONFIRMATION_URL \
-                + context['key']
+        context['activate_url'] = settings.EMAIL_CONFIRMATION_URL + context['key']
         msg = self.render_mail(template_prefix, email, context)
         msg.send()

@@ -1,6 +1,6 @@
-from rest_framework.exceptions import APIException
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import APIException
 
 
 class ActionNotAvailable(APIException):

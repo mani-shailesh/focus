@@ -2,11 +2,10 @@
 This module registers URL patterns for the 'api' app.
 """
 
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
 from django.conf.urls import url, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 from . import views
 from .routers import CustomDefaultRouter
@@ -29,12 +28,12 @@ router.register(r'replies', views.FeedbackReplyViewSet)
 # Create the schema view
 schema_view = get_schema_view(
     openapi.Info(
-        title = "Focus API",
-        default_version = "v1",
-        contact = openapi.Contact(email="manipandey.shailesh@gmail.com"),
+        title="Focus API",
+        default_version="v1",
+        contact=openapi.Contact(email="manipandey.shailesh@gmail.com"),
     ),
-    public = True,
-    permission_classes = (permissions.AllowAny,),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [

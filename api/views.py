@@ -2,10 +2,10 @@
 This module contains the controllers attached to the API endpoints.
 """
 
-from rest_framework import viewsets
-from rest_framework import permissions as rest_permissions
-from rest_framework import filters as rest_filters
 from rest_framework import exceptions as rest_exceptions
+from rest_framework import filters as rest_filters
+from rest_framework import permissions as rest_permissions
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -194,7 +194,7 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'retrieve' or self.action == 'update' or \
-           self.action == 'create':
+                self.action == 'create':
             return serializers.ClubMembershipEditSerializer
         return serializers.ClubMembershipSerializer
 
@@ -213,7 +213,7 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
                 'You can not update the User!'
             )
         if not club_membership.club_role.club \
-           .has_role(serializer.validated_data['club_role']):
+                .has_role(serializer.validated_data['club_role']):
             raise rest_exceptions.ValidationError(
                 'Invalid Club Role ID for this Club!')
         return super(ClubMembershipViewSet, self).update(

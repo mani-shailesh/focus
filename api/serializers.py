@@ -3,10 +3,11 @@ This modules contains classes to define serialization of Models.
 """
 
 from django.conf import settings
-from rest_framework import serializers
 from rest_auth.serializers import PasswordResetSerializer
-from . import models
+from rest_framework import serializers
+
 from . import constants
+from . import models
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -68,6 +69,7 @@ class ClubRoleSerializer(serializers.ModelSerializer):
     """
     Serializer for a ClubRole.
     """
+
     class Meta:
         model = models.ClubRole
         fields = ('id', 'name', 'description', 'club', 'privilege')

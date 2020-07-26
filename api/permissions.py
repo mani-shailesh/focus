@@ -67,7 +67,7 @@ class ClubPermission(permissions.BasePermission):
             return request.user.is_secretary()
         # Only allow a secretary or club representative to update
         return request.user.is_secretary() or \
-            obj.has_rep(request.user)
+               obj.has_rep(request.user)
 
 
 class ClubRolePermission(permissions.BasePermission):
@@ -122,8 +122,8 @@ class FeedbackPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return obj.author == request.user \
-                    or request.user.is_secretary() \
-                    or obj.club.has_rep(request.user)
+                   or request.user.is_secretary() \
+                   or obj.club.has_rep(request.user)
         # Do not allow write permissions to anyone
         return False
 
@@ -137,8 +137,8 @@ class FeedbackReplyPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return obj.parent.author == request.user \
-                    or request.user.is_secretary() \
-                    or obj.parent.club.has_rep(request.user)
+                   or request.user.is_secretary() \
+                   or obj.parent.club.has_rep(request.user)
 
         # Do not allow anyone to modify or delete
         return False
@@ -154,7 +154,7 @@ class ProjectPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return request.user.is_secretary() or \
-                    obj.has_club_member(request.user)
+                   obj.has_club_member(request.user)
         # Do not allow anyone to delete a Project.
         if request.method == 'DELETE':
             return False
@@ -177,7 +177,7 @@ class ProjectMembershipPermission(permissions.BasePermission):
         if request.method == 'DELETE':
             # Only allow the leader and rep of the club to delete.
             return obj.project.has_leader(request.user) or \
-                obj.club.has_rep(request.user)
+                   obj.club.has_rep(request.user)
 
         # Do not allow anyone to edit
         return False
@@ -198,6 +198,6 @@ class ClubMembershipRequestPermission(permissions.BasePermission):
         # Only allow access to the requester or the representative of the club
         # for which the request is made
         if obj.club.has_rep(request.user) or \
-           obj.user == request.user:
+                obj.user == request.user:
             return True
         return False
