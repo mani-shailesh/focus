@@ -66,8 +66,7 @@ class ClubPermission(permissions.BasePermission):
         if request.method == 'DELETE':
             return request.user.is_secretary()
         # Only allow a secretary or club representative to update
-        return request.user.is_secretary() or \
-               obj.has_rep(request.user)
+        return request.user.is_secretary() or obj.has_rep(request.user)
 
 
 class ClubRolePermission(permissions.BasePermission):

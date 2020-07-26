@@ -66,7 +66,7 @@ class ClubMembershipRequestViewSet(custom_viewsets.CreateListRetrieveViewSet):
         user is a representative of.
     create:
         Create a new ClubMembershipRequest. Only non-members of a Club can
-        request for it's membership if they do not have a pending request
+        request for its membership if they do not have a pending request
         already.
 
     """
@@ -134,7 +134,7 @@ class ClubMembershipRequestViewSet(custom_viewsets.CreateListRetrieveViewSet):
     @action(detail=True, methods=['put'])
     def cancel(self, request, pk=None):
         """
-        Accept the request if the current user has initiated this request and
+        Cancel the request if the current user has initiated this request and
         the request is still pending.
         """
         membership_request = self.get_object()
@@ -149,7 +149,7 @@ class ClubRoleViewSet(viewsets.ModelViewSet):
     """
     retrieve:
         Return the details of given ClubRole if current user is a member of the
-        correspoinding Club.
+        corresponding Club.
     list:
         Return a list of all the existing ClubRoles in the Clubs that the
         current User is a member of.
@@ -174,7 +174,7 @@ class ClubMembershipViewSet(viewsets.ModelViewSet):
     """
     retrieve:
         Return the details of given ClubMembership if current user is a member
-        of the correspoinding Club.
+        of the corresponding Club.
     list:
         Return a list of ClubMembership for all Clubs or of a specific Club.
     create:
@@ -325,7 +325,7 @@ class ConversationViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     retrieve:
         Return the details of the given Conversation. Only members of the
-        correspoinding Club are authorized for this.
+        corresponding Club are authorized for this.
     list:
         Return a list of all the Conversations on Channels of the Clubs that
         the current User is a member of. Also, filter and order the results
@@ -465,7 +465,7 @@ class FeedbackViewSet(custom_viewsets.CreateListRetrieveViewSet):
     """
     retrieve:
         Return the details of the given Feedback. Only representative of the
-        correspoinding Club or a secretary is authorized for this.
+        corresponding Club or a secretary is authorized for this.
     list:
         Return a list of all the Feedbacks for Clubs that the current User is a
         representative of. Feedbacks for all Clubs are returned to the
