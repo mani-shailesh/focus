@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import focus.credentials as credentials
+import focus.config as config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     # django-allauth social account apps
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.twitter',
 
     # swagger generation
     'drf_yasg',
@@ -68,9 +70,16 @@ INSTALLED_APPS = [
 SITE_ID = 1
 ACCOUNT_ADAPTER = 'api.adapters.CustomDefaultAccountAdapter'
 
+# django-allauth email verification settings
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/auth/registration/email-verified'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/auth/registration/email-verified'
+
 # URL to be sent for email confirmation. It must end with '/'.
-EMAIL_CONFIRMATION_URL = 'https://focus.com/verifyemail/'
-PASSWORD_RESET_URL = 'https://focus.com/resetpassword/'
+EMAIL_CONFIRMATION_URL = config.BASE_URL + '/auth/registration/verify-email/'
+PASSWORD_RESET_URL = config.BASE_URL + '/auth/registration/password/reset/confirm/'
 
 # Uncomment the following line to print the mails on console instead of
 # actually using SMTP server to send them.

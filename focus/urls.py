@@ -14,8 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
-from django.contrib import admin
-from .views import FacebookLogin, TwitterLogin
+from django.contrib import admin, auth
 
 urlpatterns = [
     # Django auth urls
@@ -24,9 +23,6 @@ urlpatterns = [
     url(r'^api/', include('api.urls')),
     # Django admin endpoints
     url(r'^admin/', admin.site.urls),
-    # Authorization related endpoints
-    url(r'^auth/', include('rest_auth.urls')),
-    url(r'^auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
-    url(r'^auth/twitter/$', TwitterLogin.as_view(), name='twitter_login'),
+    # Our auth endpoints
+    url(r'^auth/', include('auth.urls')),
 ]

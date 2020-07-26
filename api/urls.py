@@ -39,6 +39,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    # TODO: Remove when we completely switch to /auth
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
 
