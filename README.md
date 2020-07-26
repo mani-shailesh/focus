@@ -1,5 +1,5 @@
 # focus 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
 
 ## Description
 A managerial networking product for clubs operating in an educational institute
@@ -16,7 +16,4 @@ A managerial networking product for clubs operating in an educational institute
     * ```python manage.py migrate``` to create required tables in your databse.
     * ```python manage.py createsuperuser``` to create a superuser for the application.
     * ```python manage.py runserver``` to run the local development server.
-* Visit admin panel on your browser at ```http://localhost:8000/admin``` and login using the superuser credentials that you created in the previous step.
-* Create new Social Application for enabling Facebook and Twitter login using
-  your client_id and client_secret from corresponding service.
 * Visit ```http://localhost:8000/api/swagger/``` to check if it's working!
