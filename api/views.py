@@ -2,6 +2,8 @@
 This module contains the controllers attached to the API endpoints.
 """
 
+from django.contrib.auth import get_user_model
+
 from rest_framework import exceptions as rest_exceptions
 from rest_framework import filters as rest_filters
 from rest_framework import permissions as rest_permissions
@@ -20,7 +22,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     list:
         Return a list of all the existing Users.
     """
-    queryset = models.User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = serializers.UserSerializer
     permission_classes = (rest_permissions.IsAuthenticated,)
 
@@ -51,7 +53,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         """
         Create a new Club. Only a secretary is allowed to create a new Club.
         """
-        if not request.user.is_secretary():
+        if not request.user.is_secretary:
             raise rest_exceptions.PermissionDenied()
         return super(ClubViewSet, self).create(request, *args, **kwargs)
 
@@ -258,7 +260,7 @@ class ChannelViewSet(custom_viewsets.UpdateListRetrieveViewSet):
         as response.
         """
         channel = self.get_object()
-        queryset = models.User.objects.filter(channel=channel)
+        queryset = get_user_model().objects.filter(channel=channel)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = serializers.UserSerializer(page, many=True)

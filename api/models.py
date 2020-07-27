@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models, transaction
 
@@ -16,13 +17,11 @@ class User(AbstractUser):
     """
     Wrapper for the AbstractUser to make it easy to modify User later.
     """
-
-    def is_secretary(self):
-        """
-        Returns true if this User is `secretary`, false otherwise
-        """
-        # TODO
-        return self.is_superuser
+    is_secretary = models.BooleanField(
+        'Secretary',
+        default=False,
+        help_text='Designates whether this user is a secretary.',
+    )
 
 
 class Club(models.Model):
@@ -31,7 +30,7 @@ class Club(models.Model):
     """
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
-    requests = models.ManyToManyField('User', through='ClubMembershipRequest')
+    requests = models.ManyToManyField(settings.AUTH_USER_MODEL, through='ClubMembershipRequest')
 
     def __unicode__(self):
         return self.name
@@ -119,7 +118,7 @@ class ClubMembershipRequest(models.Model):
         (constants.REQUEST_STATUS_CANCELLED,
          constants.DISPLAY_NAME[constants.REQUEST_STATUS_CANCELLED]),
     )
-    user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     initiated = models.DateTimeField(auto_now_add=True, blank=False)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES,
@@ -204,7 +203,7 @@ class ClubRole(models.Model):
     description = models.TextField()
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False,
                              related_name='roles')
-    members = models.ManyToManyField('User', through='ClubMembership')
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, through='ClubMembership')
     privilege = models.CharField(max_length=3, choices=PRIVILEGE_CHOICES,
                                  blank=False, default=constants.PRIVILEGE_MEM)
 
@@ -216,7 +215,7 @@ class ClubMembership(models.Model):
     """
     Model to represent membership of a User in a Club through a ClubRole
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
     club_role = models.ForeignKey('ClubRole', on_delete=models.CASCADE,
                                   blank=False)
     joined = models.DateTimeField(auto_now_add=True, blank=False)
@@ -237,9 +236,9 @@ class Project(models.Model):
                                    related_name='projects')
     started = models.DateTimeField(auto_now_add=True, blank=False)
     closed = models.DateTimeField(default=None, blank=True, null=True)
-    leader = models.ForeignKey('User', on_delete=models.PROTECT, blank=False,
+    leader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, blank=False,
                                related_name='lead_projects')
-    members = models.ManyToManyField('User', through='ProjectMembership')
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, through='ProjectMembership')
     clubs = models.ManyToManyField('Club', through='ClubProject')
 
     def __unicode__(self):
@@ -350,7 +349,7 @@ class ProjectMembership(models.Model):
     """
     Model to represent membership of User in a Project
     """
-    user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
     project = models.ForeignKey('Project', on_delete=models.CASCADE,
                                 blank=False)
@@ -368,7 +367,7 @@ class Channel(models.Model):
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField()
     club = models.OneToOneField('Club', on_delete=models.CASCADE, blank=False)
-    subscribers = models.ManyToManyField('User', through='ChannelSubscription')
+    subscribers = models.ManyToManyField(settings.AUTH_USER_MODEL, through='ChannelSubscription')
 
     def __unicode__(self):
         return '{} : {}'.format(self.name, self.club)
@@ -408,7 +407,7 @@ class ChannelSubscription(models.Model):
     """
     Model to represent a User's subscription to a Channel
     """
-    user = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
     channel = models.ForeignKey('Channel', on_delete=models.CASCADE,
                                 blank=False)
     joined = models.DateTimeField(auto_now_add=True, blank=False)
@@ -438,7 +437,7 @@ class Conversation(models.Model):
     created = models.DateTimeField(auto_now_add=True, blank=False)
     channel = models.ForeignKey('Channel', on_delete=models.CASCADE,
                                 blank=False)
-    author = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
     parent = models.ForeignKey('Conversation', on_delete=models.CASCADE,
                                default=None, blank=True, null=True)
 
@@ -454,7 +453,7 @@ class Feedback(models.Model):
     content = models.TextField(blank=False)
     created = models.DateTimeField(auto_now_add=True, blank=False)
     club = models.ForeignKey('Club', on_delete=models.CASCADE, blank=False)
-    author = models.ForeignKey('User', on_delete=models.CASCADE, blank=False)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
 
     def __unicode__(self):
         return 'Feedback for {} by {}'.format(self.club, self.author)

@@ -64,9 +64,9 @@ class ClubPermission(permissions.BasePermission):
             return True
         # Only allow a secretary to delete
         if request.method == 'DELETE':
-            return request.user.is_secretary()
+            return request.user.is_secretary
         # Only allow a secretary or club representative to update
-        return request.user.is_secretary() or obj.has_rep(request.user)
+        return request.user.is_secretary or obj.has_rep(request.user)
 
 
 class ClubRolePermission(permissions.BasePermission):
@@ -98,11 +98,11 @@ class ClubMembershipPermission(permissions.BasePermission):
         have to go through the ClubMembershipRequest route.
         """
         if request.method == 'POST':
-            return request.user.is_secretary()
+            return request.user.is_secretary
         return True
 
     def has_object_permission(self, request, view, obj):
-        if request.user.is_secretary():
+        if request.user.is_secretary:
             return True
 
         if request.method in permissions.SAFE_METHODS:
@@ -121,7 +121,7 @@ class FeedbackPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return obj.author == request.user \
-                   or request.user.is_secretary() \
+                   or request.user.is_secretary \
                    or obj.club.has_rep(request.user)
         # Do not allow write permissions to anyone
         return False
@@ -136,7 +136,7 @@ class FeedbackReplyPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return obj.parent.author == request.user \
-                   or request.user.is_secretary() \
+                   or request.user.is_secretary \
                    or obj.parent.club.has_rep(request.user)
 
         # Do not allow anyone to modify or delete
@@ -152,7 +152,7 @@ class ProjectPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
-            return request.user.is_secretary() or \
+            return request.user.is_secretary or \
                    obj.has_club_member(request.user)
         # Do not allow anyone to delete a Project.
         if request.method == 'DELETE':

@@ -14,6 +14,12 @@ class UserAdmin(AbstractUserAdmin):
     """
     model = models.User
 
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+        if obj:
+            fieldsets += (('Administration', {'fields': ('is_secretary',)}),)
+        return fieldsets
+
 
 # Register the models.
 admin.site.register(models.User, UserAdmin)

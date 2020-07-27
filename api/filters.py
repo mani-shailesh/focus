@@ -192,7 +192,7 @@ class FeedbackFilter(rest_framework_filters.BaseFilterBackend):
             raise ParseError
 
         # Allow secretary to view feedbacks for all or selected clubs
-        if not request.user.is_secretary():
+        if not request.user.is_secretary:
             # Filter feedbacks of all clubs for which the user
             # is representative or the feedbacks which have
             # been posted by the user
@@ -246,7 +246,7 @@ class ProjectFilter(rest_framework_filters.BaseFilterBackend):
 
         # Allow secretary to view projects of all clubs or a selected club
         # Allow club members to only view projects of their clubs
-        if not request.user.is_secretary():
+        if not request.user.is_secretary:
             # Filter projects of all clubs for which the user is a member
             queryset = queryset.filter(
                 clubs__roles__members__id__contains=request.user.id)
@@ -478,7 +478,7 @@ class FeedbackReplyFilter(rest_framework_filters.BaseFilterBackend):
             raise ParseError
 
         # Allow secretary to view feedback replies for all or selected clubs
-        if not request.user.is_secretary():
+        if not request.user.is_secretary:
             # Filter feedback replies of all clubs for which the user
             # is representative or the replies to feedbacks which have
             # been posted by the user
